@@ -1,0 +1,30 @@
+﻿<div class="title-bar">
+    <h2>Ticket Details</h2>
+    <a ng-click="vm.editTicket(vm.ticket.title, vm.ticket.content, vm.ticket.priority, vm.selectedCategory.id)" class="main-button green">Save Changes</a>
+</div>
+<div class="main-content">
+    <form class="content">
+        <input type="text" ng-model="vm.ticket.title" required />
+        <hr />
+        <div class="meta-data">
+            <p>Category: <select ng-model="vm.selectedCategory" ng-options="category.name for category in vm.categories" required></select></p>
+            <p>Priority: <select ng-model="vm.ticket.priority" required><option>Low</option><option selected>Medium</option><option>High</option></select></p>
+            <p>Status:  <span class="status" ng-class="{'Open':'green', 'Closed':'red'}[vm.ticket.status]">{{ vm.ticket.status }}</span></p>
+            <p>Date Created:  <span class="default">{{ vm.ticket.dateCreated | date:"MMMM d ', ' yyyy ' at ' h:mm a" }}</span></p>
+            <p>Last Edited:  <span class="default">{{ vm.ticket.lastEdited | date:"MMMM d ', ' yyyy ' at ' h:mm a" }}</span></p>
+            <p>Created By: <span class="default">{{ vm.ticket.creator }}</span></p>
+        </div>
+        <div class="object-content">
+            <h4>Content</h4>
+            <p><textarea ng-model="vm.ticket.content" required></textarea></p>
+        </div>
+        <div class="update" ng-repeat="update in vm.updates | orderBy:'-id'">
+            <div class="head">
+                <h4>Update</h4>
+                <p>{{ update.dateCreated | date:"MMMM d ', ' yyyy ' at ' h:mm a" }}</p>
+            </div>
+            <p class="note">{{ update.content }}</p>
+            <p class="signature" ng-hide="{{ update.systemGeneratedNote }}">-{{ update.creator }}</p>
+        </div>
+        </form>
+</div>

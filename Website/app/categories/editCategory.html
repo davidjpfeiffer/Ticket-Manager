@@ -1,0 +1,14 @@
+﻿<div class="title-bar">
+    <h2>Category Details</h2>
+    <a ng-click="vm.editCategory(vm.category.name)" class="main-button green">Save Changes</a>
+</div>
+<div class="main-content">
+    <form class="content">
+        <input type="text" ng-model="vm.category.name" required />
+        <hr />
+        <div class="meta-data">
+            <p>Date Created: <span class="default">{{ vm.category.dateCreated | date:"MMMM d ', ' yyyy ' at ' h:mm a" }}</span></p>
+            <p>Number of Tickets: <span class="default">{{ vm.category.numberOfTickets }}</span></p>
+        </div>
+    </form>
+</div>

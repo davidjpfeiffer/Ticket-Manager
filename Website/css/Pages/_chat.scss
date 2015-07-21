@@ -1,0 +1,112 @@
+﻿.chat {
+
+    .chat-window {
+        border: 10px solid #ddd;
+        width: 100%;
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: calc(100% - 237px);
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            li {
+                margin: 0;
+                padding: 10px;
+
+                &:nth-child(even) {
+                    background-color: #fff;
+                }
+
+                &:nth-child(odd) {
+                    background-color: #eee;
+                }
+            }
+        }
+
+        form {
+            padding: 25px 10px 0 10px;
+        }
+    }
+
+    .chat-options-list {
+        border: 10px solid #ddd;
+        width: 100%;
+
+        select {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            option {
+                padding: 10px;
+                border-bottom: 2px solid #eee;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                &:hover {
+                    background-color: #eee;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
+
+
+/*****************************************
+    Small Breakpoint
+*****************************************/
+@media screen and (min-width: 540px) {
+}
+
+/*****************************************
+    Medium Breakpoint
+*****************************************/
+@media screen and (min-width: 720px) {
+}
+
+/*****************************************
+    Large Breakpoint
+*****************************************/
+@media screen and (min-width: 960px) {
+    .chat {
+
+        .chat-window {
+            display: inline-block;
+            max-width: calc(100% - 350px);
+            margin-right: 50px;
+            float: left;
+
+            ul {
+
+                li {
+                }
+            }
+
+            form {
+                padding: 25px 10px 0 10px;
+            }
+        }
+
+        .chat-options-list {
+            display: inline-block;
+            max-width: 300px;
+            float: left;
+        }
+    }
+}

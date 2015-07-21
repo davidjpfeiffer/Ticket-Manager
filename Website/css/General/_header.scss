@@ -1,0 +1,79 @@
+﻿/*****************************************
+    Header
+*****************************************/
+
+header {
+    overflow: auto;
+    background: $primary-color;
+    margin: 0;
+    padding: 10px 5px;
+    text-align: center;
+
+    .header-logo {
+        padding: 0 0 15px 0;
+
+        img {
+            vertical-align: middle;
+            height: 29px;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    .header-button {
+        padding: 0 0 15px 0;
+
+        a {
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+            padding: 2.5px 20px;
+            color: $primary-color;
+            text-transform: uppercase;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+    }
+}
+
+
+
+/*****************************************
+    EXTRA Small Breakpoint
+*****************************************/
+@media screen and (min-width: 400px) {
+}
+
+/*****************************************
+    Small Breakpoint
+*****************************************/
+@media screen and (min-width: 540px) {
+    header {
+
+        .header-logo {
+            float: left;
+            padding: 0;
+        }
+
+        .header-button {
+            float: right;
+            margin: 0 0 0 15px;
+            padding: 0;
+        }
+    }
+}
+
+/*****************************************
+    Medium Breakpoint
+*****************************************/
+@media screen and (min-width: 720px) {
+    header {
+        padding: 20px;
+    }
+}
+
+/*****************************************
+    Large Breakpoint
+*****************************************/
+@media screen and (min-width: 960px) {
+}
