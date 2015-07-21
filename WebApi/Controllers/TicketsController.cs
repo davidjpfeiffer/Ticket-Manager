@@ -87,8 +87,23 @@ namespace WebApi.Controllers
             }
         }
 
+        [Route("{ticketId:int}/updates/{ticketUpdateId:int}")]
+        public IHttpActionResult GetUpdate(int ticketId, int ticketUpdateId)
+        {
+            TicketUpdate newTicketUpdate = this.Context.TicketUpdates.ToList().FirstOrDefault(i => i.Id == ticketUpdateId);
+
+            if (newTicketUpdate == null)
+            {
+                return this.NotFound();
+            }
+            else
+            {
+                return this.Ok(TicketUpdateConverter.ToDto(newTicketUpdate));
+            }
+        }
+
         [Route("{ticketId:int}/updates")]
-        public IHttpActionResult Post(int ticketId, Dto.TicketUpdate update)
+        public IHttpActionResult PostUpdates(int ticketId, Dto.TicketUpdate update)
         {
             Ticket existingTicket = this.Context.Tickets.ToList().FirstOrDefault(i => i.Id == ticketId);
             TicketCategory existingCategory = this.Context.TicketCategories.ToList().FirstOrDefault(i => i.Id == existingTicket.CategoryId);
@@ -112,7 +127,7 @@ namespace WebApi.Controllers
                 TicketUpdate newTicketUpdate = existingTicket.CreateNewTicketUpdate(update.Content, update.CreatorId);
                 this.Context.TicketUpdates.Add(newTicketUpdate);
                 this.Context.SaveChanges();
-                return this.Created(this.Request.RequestUri.AbsolutePath + "/" + newTicketUpdate.Id, TicketUpdateConverter.ToDto(newTicketUpdate));
+                return this.Created(this.Request.RequestUri.AbsolutePath + '/' + ticketId + "/updates/" + newTicketUpdate.Id, TicketUpdateConverter.ToDto(newTicketUpdate));
             }
         }
 

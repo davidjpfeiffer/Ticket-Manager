@@ -15,9 +15,10 @@ namespace Service.Converters
             return new Dto.Message()
             {
                 Id = domain.Id,
-                ChatLogId = domain.ChatLogId,
-                UserId = domain.UserId,
-                Text = domain.Text
+                SenderId = domain.SenderId,
+                RecipientId = domain.RecipientId,
+                Content = domain.Content,
+                DateSent = domain.DateSent,
             };
         }
     }

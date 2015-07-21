@@ -40,12 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BusinessConverter.cs" />
+    <Compile Include="Converters\MessageConverter.cs" />
     <Compile Include="Converters\TicketCategoryConverter.cs" />
     <Compile Include="Converters\TicketConverter.cs" />
     <Compile Include="Converters\TicketUpdateConverter.cs" />
     <Compile Include="Converters\UserConverter.cs" />
     <Compile Include="Dto\Account.cs" />
     <Compile Include="Dto\Business.cs" />
+    <Compile Include="Dto\Message.cs" />
     <Compile Include="Dto\Ticket.cs" />
     <Compile Include="Dto\TicketCategory.cs" />
     <Compile Include="Dto\TicketUpdate.cs" />

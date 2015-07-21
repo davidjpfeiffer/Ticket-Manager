@@ -1,146 +1,113 @@
+﻿using Domain;
+using Service.Converters;
+using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using System.Linq;
 using System.Net;
-using Domain;
-using Service.Converters;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Web.Http;
+using Dto = Service.Dto;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("users")]
-    public class UsersController : ApiController
+    public class UsersController : WebApi.Controllers.BaseController
     {
-
-        private EarlyBirdsContext Context = new EarlyBirdsContext();
-        
         [Route]
         public IHttpActionResult Get()
         {
-            return Ok(Context.Users.ToList().Select(user => UserConverter.ToDto(user)));
+            return this.Ok(this.Context.Users.ToList().Select(i => UserConverter.ToDto(i)));
         }
 
-        [Route("{id:int}")]
-        public IHttpActionResult Get(int id)
+        [Route("{userId:int}")]
+        public IHttpActionResult Get(int userId)
         {
-            User user = Context.Users.FirstOrDefault(i => i.Id == id);
-            if (user == null)
+            User existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == userId);
+            if (existingUser == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
             else
             {
-                return Ok(UserConverter.ToDto(user));
-            }
-        }
-
-        [Route("{name}")]
-        public IHttpActionResult Get(string name)
-        {
-            User user = Context.Users.FirstOrDefault(i => i.LastName == name);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(UserConverter.ToDto(user));
-            }
-        }
-
-        [Route("{userId:int}/messages")]
-        public IHttpActionResult GetMessages(int userId)
-        {
-            User user = Context.Users.FirstOrDefault(i => i.Id == userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.Messages.ToList().Select(m => MessageConverter.ToDto(m)));
-            }
-        }
-
-        [Route("{name}/messages")]
-        public IHttpActionResult GetMessages(string name)
-        {
-            User user = Context.Users.FirstOrDefault(i => i.LastName.ToLower() == name.ToLower());
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.Messages.ToList().Select(m => MessageConverter.ToDto(m)));
-            }
-        }
-
-        [Route("{userId:int}/channels")]
-        public IHttpActionResult GetChannels(int userId)
-        {
-            User user = Context.Users.FirstOrDefault(u => u.Id == userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.Channels.ToList().Select(c => ChannelConverter.ToDto(c)));
-            }
-        }
-
-        [Route("{name}/channels")]
-        public IHttpActionResult GetChannels(string name)
-        {
-            User user = Context.Users.FirstOrDefault(u => u.LastName.ToLower() == name.ToLower());
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.Channels.ToList().Select(c => ChannelConverter.ToDto(c)));
+                return this.Ok(UserConverter.ToDto(existingUser));
             }
         }
 
         [Route]
-        public IHttpActionResult Post(User user)
+        public IHttpActionResult Get(string email, string password)
         {
-            Context.Users.Add(user);
-            Context.SaveChanges();
-            return Created(this.Request.RequestUri.AbsolutePath + "/" + user.Id, user);
-        }
-
-        [Route("{id:int}")]
-        public IHttpActionResult Put(int id, User user)
-        {
-            User existing = Context.Users.FirstOrDefault(i => i.Id == id);
-            if (existing == null)
+            User existingUser = this.Context.Users.ToList().FirstOrDefault(i => (i.Email == email) && (i.Password == password));
+            if (existingUser == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
             else
             {
-                existing.FirstName = user.FirstName;
-                existing.LastName = user.LastName;
-                Context.SaveChanges();
-                return Ok(existing);
+                return this.Ok(UserConverter.ToDto(existingUser));
             }
         }
 
-        [Route("{id:int}")]
-        public IHttpActionResult Delete(int id)
+        [Route]
+        public IHttpActionResult Post(Dto.User user)
         {
-            User existing = Context.Users.FirstOrDefault(i => i.Id == id);
-            if (existing == null)
+            if (user == null)
             {
-                return NotFound();
+                return this.BadRequest();
             }
             else
             {
-                Context.Users.Remove(existing);
-                Context.SaveChanges();
-                return StatusCode(HttpStatusCode.NoContent);
+                Business existingBusiness = this.Context.Businesses.ToList().FirstOrDefault(i => i.Id == user.BusinessId);
+                if (existingBusiness == null)
+                {
+                    return this.BadRequest();
+                }
+                else
+                {
+                    User newUser = existingBusiness.CreateNewUserAccount(user.FirstName, user.LastName, user.Email, user.Password);
+                    this.Context.Users.Add(newUser);
+                    this.Context.SaveChanges();
+                    return this.Created(this.Request.RequestUri.AbsolutePath + "/" + newUser.Id, UserConverter.ToDto(newUser));
+                }
+            }
+        }
+
+        [Route("{userId:int}")]
+        public IHttpActionResult Put(int userId, Dto.User user)
+        {
+            if (user == null)
+            {
+                return this.BadRequest();
+            }
+            else
+            {
+                User existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == userId);
+                if (existingUser == null)
+                {
+                    return this.NotFound();
+                }
+                else
+                {
+                    existingUser.UpdateUser(user.FirstName, user.LastName, user.TicketUpdates, user.Email, user.Password);
+                    this.Context.SaveChanges();
+                    return this.Ok(UserConverter.ToDto(existingUser));
+                }
+            }
+        }
+
+        [Route("{userId:int}")]
+        public IHttpActionResult Delete(int userId)
+        {
+            User existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == userId);
+            if (existingUser == null)
+            {
+                return this.NotFound();
+            }
+            else
+            {
+                this.Context.Users.Remove(existingUser);
+                this.Context.SaveChanges();
+                return this.StatusCode(HttpStatusCode.NoContent);
             }
         }
     }

@@ -34,6 +34,10 @@ namespace Domain
             List<TicketUpdate> ticketUpdates = GetTicketUpdates();
             ticketUpdates.ForEach(i => context.TicketUpdates.Add(i));
             context.SaveChanges();
+
+            List<Message> messages = GetMessages();
+            messages.ForEach(i => context.Messages.Add(i));
+            context.SaveChanges();
         }
 
         private static List<Business> GetBusinesses()
@@ -108,6 +112,11 @@ namespace Domain
         {
             List<TicketUpdate> ticketUpdates = new List<TicketUpdate>();
             return ticketUpdates;
+        }
+        private static List<Message> GetMessages()
+        {
+            List<Message> messages = new List<Message>();
+            return messages;
         }
     }
 }

@@ -9,8 +9,9 @@ namespace Service.Dto
     public class Message
     {
         public int Id { get; set; }
-        public int ChatLogId { get; set; }
-        public int UserId { get; set; }
-        public string Text { get; set; }
+        public int SenderId { get; set; }
+        public int RecipientId { get; set; }
+        public string Content { get; set; }
+        public DateTime DateSent { get; set; }
     }
 }

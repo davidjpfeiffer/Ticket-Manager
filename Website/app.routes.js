@@ -91,8 +91,6 @@
         })
         .when('/app/chat', {
             templateUrl: '/app/chat/chat.html',
-            controller: 'chatController',
-            controllerAs: 'vm'
         })
         .otherwise({
             redirectTo: '/app/dashboard'

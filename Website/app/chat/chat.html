@@ -4,14 +4,14 @@
 <div class="main-content chat">
     <div class="chat-window">
         <ul>
-            <li ng-repeat="message in vm.currentMessages"><b>{{ message.sender.userName + ': ' }}</b>{{ message.content }}</li>
+            <li ng-repeat="message in chat.currentMessages"><b>{{ message.sender.userName + ': ' }}</b>{{ message.content }}</li>
         </ul>
-        <form ng-submit="vm.sendMessage()">
-            <input ng-model="vm.userMessage" required />
+        <form ng-submit="chat.sendMessage()">
+            <input ng-model="chat.userMessage" required />
         </form>
     </div>
     <div class="chat-options-list">
-        <select ng-model="vm.recipient" ng-click="vm.updateChatSettings()" ng-options="user.userName for user in vm.allUsers" size="8"></select>
+        <select ng-model="chat.recipient" ng-click="chat.updateChatSettings()" ng-options="user.userName for user in chat.allUsers" size="8"></select>
     </div>
     <script src="/socket.io/socket.io.js"></script>
 </div>

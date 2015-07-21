@@ -20,6 +20,7 @@ gulp.task('concatScripts', function() {
         './account/loginForm.controller.js',
         './chat.service.js',
         './main.controller.js',
+        './chat/**/*.js',
         './app/**/*.js'
     ])
         .pipe(maps.init())
