@@ -14,10 +14,10 @@
     };
     return service;
 
-    function connectToChat(user) {
+    function connectToChat(account) {
         if (service.socket === null) {
             service.socket = io.connect('http://localhost:3000');
-            service.socket.emit('add user to chat', user);
+            service.socket.emit('add user to chat', account);
         }
     }
 }

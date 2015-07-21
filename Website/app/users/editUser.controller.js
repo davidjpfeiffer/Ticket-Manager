@@ -5,9 +5,9 @@
         .module('app')
         .controller('editUserController', editUserController);
 
-    editUserController.$inject = ['$routeParams', '$route', 'userService'];
+    editUserController.$inject = ['$routeParams', '$window', 'userService'];
 
-    function editUserController($routeParams, $route, userService) {
+    function editUserController($routeParams, $window, userService) {
         var vm = this;
         vm.editUser = editUser;
         vm.user = {};
@@ -23,8 +23,9 @@
             if (vm.newPassword !== '') {
                 vm.user.password = vm.newPassword;
             }
+            console.log('test');
             return userService.editUserInfo($routeParams.userId, { 'firstName': vm.user.firstName, 'lastName': vm.user.lastName, 'ticketUpdates' : vm.user.ticketUpdates, 'email': vm.user.email, 'password': vm.user.password })
-            .then(function() { $route.reload(); });
+            .then(function() { $window.location.href = '/app/users/' + vm.user.id; });
         }
 
         function activate() {

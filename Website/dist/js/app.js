@@ -7625,10 +7625,10 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
     };
     return service;
 
-    function connectToChat(user) {
+    function connectToChat(account) {
         if (service.socket === null) {
             service.socket = io.connect('http://localhost:3000');
-            service.socket.emit('add user to chat', user);
+            service.socket.emit('add user to chat', account);
         }
     }
 }
@@ -7644,14 +7644,14 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
 
     function mainController(authenticationService, chatService) {
         var main = this;
-        main.userAccount = {};
+        main.account = {};
         main.logout = authenticationService.logout;
 
         activate();
 
         function activate() {
-            main.userAccount = authenticationService.getAuthenticatedAccount();
-            chatService.connectToChat(main.userAccount);
+            main.account = authenticationService.getAuthenticatedAccount();
+            chatService.connectToChat(main.account);
         };
     }
 }());
@@ -7777,7 +7777,7 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
         function editCategory(name) {
             var account = authenticationService.getAuthenticatedAccount();
             return categoryService.editCategory(vm.category.id, { 'name': name })
-            .then(function() { $window.location.href = '/app/categories'; });
+            .then(function() { $window.location.href = '/app/categories/' + vm.category.id; });
         }
 
         function activate() { } {
@@ -8140,9 +8140,9 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
         .module('app')
         .controller('editUserController', editUserController);
 
-    editUserController.$inject = ['$routeParams', '$route', 'userService'];
+    editUserController.$inject = ['$routeParams', '$window', 'userService'];
 
-    function editUserController($routeParams, $route, userService) {
+    function editUserController($routeParams, $window, userService) {
         var vm = this;
         vm.editUser = editUser;
         vm.user = {};
@@ -8158,8 +8158,9 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
             if (vm.newPassword !== '') {
                 vm.user.password = vm.newPassword;
             }
+            console.log('test');
             return userService.editUserInfo($routeParams.userId, { 'firstName': vm.user.firstName, 'lastName': vm.user.lastName, 'ticketUpdates' : vm.user.ticketUpdates, 'email': vm.user.email, 'password': vm.user.password })
-            .then(function() { $route.reload(); });
+            .then(function() { $window.location.href = '/app/users/' + vm.user.id; });
         }
 
         function activate() {

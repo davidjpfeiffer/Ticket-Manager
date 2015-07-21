@@ -670,6 +670,50 @@ h1, h2, h3, h4, h5, h6, hgroup, ul, ol, dl, blockquote, p, address, table, field
 .padding-bottom-none {
   padding-bottom: 0; }
 
+.spinner {
+  animation: rotator 1.4s linear infinite; }
+
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg); }
+
+  100% {
+    transform: rotate(270deg); } }
+
+.path {
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite; }
+
+@keyframes colors {
+  0% {
+    stroke: #4285F4; }
+
+  25% {
+    stroke: #DE3E35; }
+
+  50% {
+    stroke: #F7C223; }
+
+  75% {
+    stroke: #1B9A59; }
+
+  100% {
+    stroke: #4285F4; } }
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187; }
+
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(135deg); }
+
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg); } }
+
 /* General */
 /*****************************************
     Variables
@@ -782,16 +826,16 @@ header {
   margin: 0;
   padding: 10px 5px;
   text-align: center; }
-  header div {
+  header .header-logo {
     padding: 0 0 15px 0; }
-    header div img {
+    header .header-logo img {
       vertical-align: middle;
-      width: 200px;
+      height: 29px;
       margin: 0;
       padding: 0; }
-  header #toggle-login-button {
-    padding: 2px 0; }
-    header #toggle-login-button a {
+  header .header-button {
+    padding: 0 0 15px 0; }
+    header .header-button a {
       font-size: 12px;
       font-weight: 600;
       display: block;
@@ -808,14 +852,13 @@ header {
     Small Breakpoint
 *****************************************/
 @media screen and (min-width: 540px) {
-  header div {
+  header .header-logo {
     float: left;
     padding: 0; }
-    header div img {
-      width: 225px; }
-  header #toggle-login-button {
+  header .header-button {
     float: right;
-    margin: 0 0 0 15px; }
+    margin: 0 0 0 15px;
+    padding: 0; }
  }
 
 /*****************************************
@@ -1222,10 +1265,12 @@ form {
     list-style: none;
     margin: 0;
     padding: 0;
-    max-height: calc(100% - 107px);
+    max-height: calc(100% - 237px);
     height: 100%;
     overflow-x: hidden;
     overflow-y: scroll; }
+    .chat .chat-window ul::-webkit-scrollbar {
+      display: none; }
     .chat .chat-window ul li {
       margin: 0;
       padding: 10px; }
@@ -1640,10 +1685,6 @@ form {
     color: gray; }
   .app-content .content .update .signature {
     margin-top: 15px; }
-.app-content .post-update {
-  background-color: #fff; }
-  .app-content .post-update button.single {
-    width: 100%; }
 
 /*****************************************
     Small Breakpoint
@@ -1654,8 +1695,6 @@ form {
 @media screen and (min-width: 720px) {
   .app-content .content {
     text-align: left; }
-  .app-content .post-update button.single {
-    width: auto; }
  }
 
 /*****************************************
@@ -1664,9 +1703,5 @@ form {
 /*****************************************
     EXTRA Large Breakpoint
 *****************************************/
-@media screen and (min-width: 1200px) {
-  .app-content .post-update {
-    width: 50%; }
- }
 
 /*# sourceMappingURL=app.css.map */

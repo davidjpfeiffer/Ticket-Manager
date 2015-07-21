@@ -9,14 +9,14 @@
 
     function mainController(authenticationService, chatService) {
         var main = this;
-        main.userAccount = {};
+        main.account = {};
         main.logout = authenticationService.logout;
 
         activate();
 
         function activate() {
-            main.userAccount = authenticationService.getAuthenticatedAccount();
-            chatService.connectToChat(main.userAccount);
+            main.account = authenticationService.getAuthenticatedAccount();
+            chatService.connectToChat(main.account);
         };
     }
 }());

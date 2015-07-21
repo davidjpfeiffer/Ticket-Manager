@@ -17,7 +17,7 @@
         function editCategory(name) {
             var account = authenticationService.getAuthenticatedAccount();
             return categoryService.editCategory(vm.category.id, { 'name': name })
-            .then(function() { $window.location.href = '/app/categories'; });
+            .then(function() { $window.location.href = '/app/categories/' + vm.category.id; });
         }
 
         function activate() { } {

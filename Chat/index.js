@@ -35,13 +35,14 @@ io.on('connection', function(socket) {
         console.log(socket.userName + ' to ' + message.recipient.userName + ': ' + message.content);
     });
 
-    socket.on('add user to chat', function(user) {
-        userBase[user.id] = { socketId: socket.id, userName: user.firstName + ' ' + user.lastName };
-        socket.userName = user.firstName + ' ' + user.lastName;
-        socket.userId = user.id;
-        console.log(socket.userName + ' has connected to the chat.');
-
-        socket.emit('update online users', userBase);
+    socket.on('add user to chat', function(account) {
+        if (account.accountType === 'user') {
+            userBase[account.id] = { socketId: socket.id, userName: account.firstName + ' ' + account.lastName };
+            socket.userName = account.firstName + ' ' + account.lastName;
+            socket.userId = account.id;
+            console.log(socket.userName + ' has connected to the chat.');
+            socket.emit('update online users', userBase);
+        }
     });
 
     socket.on('join room', function(room) {
