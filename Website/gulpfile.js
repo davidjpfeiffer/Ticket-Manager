@@ -12,15 +12,14 @@ gulp.task('concatScripts', function() {
     return gulp.src([
         './js/angular/angular.min.js',
         './js/angular/angular-route.min.js',
+        './js/toastr/angular-toastr.tpls.js',
         './js/socket-io/client-socket-io.js',
-        './app.module.js',
-        './app.routes.js',
-        './app.filters.js',
+        './app/app.module.js',
         './account/authentication.service.js',
         './account/loginForm.controller.js',
         './chat.service.js',
         './main.controller.js',
-        './chat/**/*.js',
+        './messages/**/*.js',
         './app/**/*.js'
     ])
         .pipe(maps.init())
@@ -48,15 +47,9 @@ gulp.task('compileSass', function() {
 gulp.task('watch', function() {
     gulp.watch('./css/**/*.scss', ['compileSass']);
     gulp.watch([
-        './js/angular/angular.min.js',
-        './js/angular/angular-route.min.js',
-        './js/socket-io/client-socket-io.js',
-        './app.module.js',
-        './app.routes.js',
-        './app.filters.js',
         './account/authentication.service.js',
         './account/loginForm.controller.js',
-        './chat.service.js',
+        './messages.service.js',
         './main.controller.js',
         './app/**/*.js'
     ], ['minifyScripts']);

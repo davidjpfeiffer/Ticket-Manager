@@ -1,12 +1,70 @@
-﻿<div class="page-title-wrapper"><h2>Login</h2></div>
-<div class="centered-container smaller-container">
-    <div class="main-form-wrapper">
-        <form class="main-form" ng-submit="vm.submit()">
-            <label>Email</label>
-            <input type="email" ng-model="vm.email" />
-            <label>Password</label>
-            <input type="password" ng-model="vm.password" />
-            <button type="submit">Login</button>
-        </form>
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/dist/css/app.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticket Manager</title>
+    <base href="/" />
+</head>
+<body>
+    <header>
+        <div class="header-logo"><a href="/" target="_self"><img src="/img/ticket_manager_logo.png" alt="Ticket Manager" /></a></div>
+        <div class="header-button"><a href="/login" target="_self">Login</a></div>
+        <div class="header-button"><a href="/register" target="_self">Register</a></div>
+    </header>
+    <div class="page-title-wrapper"><h2>Login</h2></div>
+    <div class="centered-container smaller-container" ng-controller="loginFormController as vm">
+        <div class="main-form-wrapper">
+            <form class="main-form" ng-submit="vm.submit()">
+                <label>Email</label>
+                <input type="email" ng-model="vm.email" />
+                <label>Password</label>
+                <input type="password" ng-model="vm.password" />
+                <button type="submit">Login</button>
+            </form>
+        </div>
     </div>
-</div>
+    <footer>
+        <div id="footer-top">
+            <div class="row" id="footer-top-wrapper">
+                <div class="col-6-lg">
+                    <div class="col-6-md">
+                        <h4>Ticket Manager</h4>
+                        <p>From corperations to small town IT departments, our service allows users to quickly and easily manage tickets to get things done.</p>
+                    </div>
+                    <div class="col-6-md">
+                        <h4>Customer Service</h4>
+                        <p>All of your customer service requests in one place. Organize and prioritize requests so you know what needs to get done, and when.</p>
+                    </div>
+                </div>
+                <div class="col-6-lg">
+                    <div class="col-6-md">
+                        <h4>Product Development</h4>
+                        <p>Empower your team to easily collaborate and keep track of what their working on. It's never been so easy to be organized.</p>
+                    </div>
+                    <div class="col-6-md">
+                        <h4>Vintage Software</h4>
+                        <p>This project was built for the Vintage Software team by David J Pfeiffer during their 2015 summer internship program.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer-bottom">
+            <div id="footer-bottom-wrapper">
+                <div>
+                    <p>&copy; David J Pfeiffer 2015. All rights reserved.</p>
+                </div>
+                <div id="footer-social-icons">
+                    <a href="#"><img src="img/Social/facebook.png" /></a>
+                    <a href="#"><img src="img/Social/google_plus.png" /></a>
+                    <a href="#"><img src="img/Social/instagram.png" /></a>
+                    <a href="#"><img src="img/Social/twitter.png" /></a>
+                    <a href="#"><img src="img/Social/youtube.png" /></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="/dist/js/app.js"></script>
+</body>
+</html>

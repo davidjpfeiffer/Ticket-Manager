@@ -68,6 +68,9 @@
     <Content Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </Content>
+    <Content Include="app\app.filters.js" />
+    <Content Include="app\app.module.js" />
+    <Content Include="app\app.routes.js" />
     <Content Include="app\categories\categories.controller.js" />
     <Content Include="app\categories\categories.html" />
     <Content Include="app\categories\category.controller.js" />
@@ -79,11 +82,15 @@
     <Content Include="app\categories\editCategory.html" />
     <Content Include="app\categories\newCategory.controller.js" />
     <Content Include="app\categories\newCategory.html" />
-    <Content Include="chat\chat.controller.js" />
-    <Content Include="app\chat\chat.html" />
+    <Content Include="app\messages\directives\message-list-item.directive.html" />
+    <Content Include="app\messages\directives\message-list-item.directive.js" />
+    <Content Include="app\messages\messages.html" />
+    <Content Include="app\messages\message.controller.js" />
+    <Content Include="app\main.controller.js" />
+    <Content Include="app\messages\message.html" />
     <Content Include="app\users\editUser.controller.js" />
     <Content Include="app\users\editUser.html" />
-    <Content Include="chat\chat.service.js" />
+    <Content Include="app\messages\message.service.js" />
     <Content Include="app\tickets\editTicket.html" />
     <Content Include="app\tickets\editTicket.controller.js" />
     <Content Include="app\tickets\ticketForm.controller.js" />
@@ -111,17 +118,15 @@
     </Content>
     <Content Include="dist\css\app.min.css" />
     <Content Include="dist\js\app.js" />
-    <Content Include="app.filters.js" />
-    <Content Include="app.module.js" />
     <Content Include="gulpfile.js" />
     <Content Include="homepage.html" />
-    <Content Include="account\authentication.service.js" />
-    <Content Include="account\loginForm.controller.js" />
+    <Content Include="app\account\authentication.service.js" />
+    <Content Include="app\account\loginForm.controller.js" />
     <Content Include="img\ticket_manager_logo.png" />
     <Content Include="js\socket-io\client-socket-io.js" />
-    <Content Include="main.controller.js" />
-    <Content Include="account\registerForm.controller.js" />
+    <Content Include="app\account\registerForm.controller.js" />
     <Content Include="js\angular\angular-route.min.js" />
+    <Content Include="js\toastr\angular-toastr.tpls.js" />
     <Content Include="login.html" />
     <Content Include="register.html" />
     <Content Include="img\Resources\background.png" />
@@ -131,7 +136,6 @@
     <Content Include="img\Resources\world-map-blur.png" />
     <Content Include="js\angular\angular.min.js" />
     <Content Include="app\tickets\ticket.controller.js" />
-    <Content Include="app.routes.js" />
     <Content Include="app\tickets\ticket.service.js" />
     <Content Include="app\index.html" />
     <Content Include="img\early-birds-logo.png" />
@@ -215,6 +219,7 @@
       <DependentUpon>app.css</DependentUpon>
     </Content>
     <Content Include="css\Resources\_loading_graphic.scss" />
+    <Content Include="css\Resources\_toastr_.scss" />
     <None Include="Properties\PublishProfiles\ticketmanager %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ticketmanager.pubxml" />
     <None Include="Web.Debug.config">
@@ -240,7 +245,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52223</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2000</IISUrl>
+          <IISUrl>http://localhost:2003</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

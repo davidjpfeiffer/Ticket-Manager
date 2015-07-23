@@ -6,21 +6,10 @@
         .config(config)
         .run(check);
 
-    config.$inject = ['$routeProvider', '$locationProvider'];
+    config.$inject = ['$routeProvider', '$locationProvider', 'toastrConfig'];
 
-    function config($routeProvider, $locationProvider) {
+    function config($routeProvider, $locationProvider, toastrConfig) {
         $routeProvider
-        .when('/', {
-            templateUrl: 'homepage.html'
-        })
-        .when('/login', {
-            templateUrl: 'login.html',
-            controller: 'loginFormController',
-            controllerAs: 'vm'
-        })
-        .when('/register', {
-            templateUrl: 'register.html'
-        })
         .when('/app/dashboard', {
             templateUrl: '/app/dashboard/dashboard.html'
         })
@@ -89,14 +78,54 @@
             controller: 'editUserController',
             controllerAs: 'vm'
         })
-        .when('/app/chat', {
-            templateUrl: '/app/chat/chat.html',
+        .when('/app/messages', {
+            templateUrl: '/app/messages/messages.html',
+            controller: 'usersController',
+            controllerAs: 'vm'
+        })
+        .when('/app/messages/:recipientId', {
+            templateUrl: '/app/messages/message.html',
+            controller: 'messageController',
+            controllerAs: 'vm'
         })
         .otherwise({
             redirectTo: '/app/dashboard'
         });
 
         $locationProvider.html5Mode(true);
+
+        angular.extend(toastrConfig, {
+            allowHtml: true,
+            autoDismiss: false,
+            closeButton: true,
+            closeHtml: '<button>&times;</button>',
+            containerId: 'toast-container',
+            extendedTimeOut: 1000,
+            iconClasses: {
+                error: 'toast-error',
+                info: 'toast-info',
+                success: 'toast-success',
+                warning: 'toast-warning'
+            },
+            maxOpened: 0,    
+            messageClass: 'toast-message',
+            newestOnTop: true,
+            onHidden: null,
+            onShown: null,
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: false,
+            preventOpenDuplicates: false,
+            progressBar: false,
+            tapToDismiss: true,
+            target: 'body',
+            templates: {
+                toast: 'directives/toast/toast.html',
+                progressbar: 'directives/progressbar/progressbar.html'
+            },
+            timeOut: 5000,
+            titleClass: 'toast-title',
+            toastClass: 'toast'
+        });
     }
 
     check.$inject = ['$rootScope', '$location', 'authenticationService'];

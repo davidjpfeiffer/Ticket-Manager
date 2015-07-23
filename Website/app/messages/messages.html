@@ -1,0 +1,25 @@
+﻿<div class="title-bar">
+    <h2>Messages</h2>
+</div>
+<form class="search-bar"><input type="text" placeholder="Search Messages" ng-model="query" required /></form>
+<div class="main-content" id="page-with-search-bar">
+    <div class="main-controls-wrapper list-controls">
+        <form class="main-controls">
+            <h3>Sorting Options</h3>
+            <hr />
+            <div class="controls">
+                <select id="main-sorting-option" ng-change="vm.secondarySortingOption = (vm.availableSortingOptions | filter: { name: vm.primarySortingOption })[0].values[0]" ng-model="vm.primarySortingOption" ng-options="option.name as option.name for option in vm.availableSortingOptions"></select>
+                <select id="secondary-sorting-option" ng-model="vm.secondarySortingOption" ng-options="value as value for value in (vm.availableSortingOptions | filter: {name: vm.primarySortingOption})[0].values"></select>
+                <button class="double">Add</button><button class="double">Remove</button>
+            </div>
+            <div class="list">
+                <select size="8" ng-options="value as value for value in vm.sortingOptions"></select>
+            </div>
+        </form>
+    </div>
+    <ul class="main-list">
+        <li ng-repeat="user in vm.users | orderBy:'-id'">
+            <message-list-item user="user" />
+        </li>
+    </ul>
+</div>

@@ -19,6 +19,7 @@ namespace Service.Converters
                 RecipientId = domain.RecipientId,
                 Content = domain.Content,
                 DateSent = domain.DateSent,
+                Sender = domain.Sender.FirstName + ' ' + domain.Sender.LastName
             };
         }
     }

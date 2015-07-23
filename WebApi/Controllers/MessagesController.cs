@@ -15,41 +15,31 @@ namespace WebApi.Controllers
     public class MessagesController : WebApi.Controllers.BaseController
     {
         [Route("{userId:int}")]
-        public IHttpActionResult Get(int userId)
+        public IHttpActionResult GetConversation(int userId)
         {
-            Ticket existingTicket = this.Context.Tickets.ToList().FirstOrDefault(i => i.Id == userId);
-            if (existingTicket == null)
-            {
-                return this.NotFound();
-            }
-            else
-            {
-                return this.Ok(TicketConverter.ToDto(existingTicket));
-            }
+            return this.Ok(this.Context.Messages.ToList().Where(i => (i.SenderId == userId) || (i.RecipientId == userId)).Select(j => MessageConverter.ToDto(j)));
         }
-        [Route]
-        public IHttpActionResult Post(Dto.Ticket ticket)
+
+        [Route("{userOneId:int}/{userTwoId:int}")]
+        public IHttpActionResult GetConversation(int userOneId, int userTwoId)
         {
-            if (ticket == null)
+            return this.Ok(this.Context.Messages.ToList().Where(i => ((i.SenderId == userOneId) && (i.RecipientId == userTwoId)) || ((i.RecipientId == userOneId) && (i.SenderId == userTwoId))).Select(j => MessageConverter.ToDto(j)));
+        }
+
+        [Route]
+        public IHttpActionResult Post(Dto.Message message)
+        {
+            if (message == null)
             {
                 return this.BadRequest();
             }
             else
             {
-                TicketCategory existingTicketCategory = this.Context.TicketCategories.ToList().FirstOrDefault(i => i.Id == ticket.CategoryId);
-                Business existingBusiness = this.Context.Businesses.ToList().FirstOrDefault(i => i.Id == existingTicketCategory.BusinessId);
-                User existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == ticket.CreatorId);
-                if (existingTicketCategory == null || existingBusiness == null || existingUser == null)
-                {
-                    return this.BadRequest();
-                }
-                else
-                {
-                    Ticket newTicket = existingBusiness.CreateNewTicket(ticket.Title, ticket.Content, existingTicketCategory.Id, ticket.Priority, ticket.CreatorId);
-                    this.Context.Tickets.Add(newTicket);
-                    this.Context.SaveChanges();
-                    return this.Created(this.Request.RequestUri.AbsolutePath + "/" + newTicket.Id, TicketConverter.ToDto(newTicket));
-                }
+                Message newMessage = new Message(message.SenderId, message.RecipientId, message.Content);
+                this.Context.Messages.Add(newMessage);
+                this.Context.SaveChanges();
+                newMessage = this.Context.Messages.FirstOrDefault(i => i.Id == newMessage.Id);
+                return this.Created("", new {});
             }
         }
     }

@@ -1,19 +1,59 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="/dist/css/app.min.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ticket Manager</title>
-    <base href="/" />
 </head>
 <body>
     <header>
-        <div class="header-logo"><a href="/"><img src="/img/ticket_manager_logo.png" alt="Ticket Manager" /></a></div>
-        <div class="header-button"><a href="/login">Login</a></div>
-        <div class="header-button"><a href="/register">Register</a></div>
+        <div class="header-logo"><a href="/" target="_self"><img src="/img/ticket_manager_logo.png" alt="Ticket Manager" /></a></div>
+        <div class="header-button"><a href="/login" target="_self">Login</a></div>
+        <div class="header-button"><a href="/register" target="_self">Register</a></div>
     </header>
-    <ng-view></ng-view>
+    <div class="homepage-title-wrapper">
+        <h2>Ticket Management Made Easy</h2>
+        <p>The ultimate ticket management system.</p>
+    </div>
+    <main>
+        <div class="content-container">
+            <div class="row centered-container larger-container">
+                <div class="col-4-lg content-container-img">
+                    <img src="/img/Resources/tech-support-icon.png" />
+                </div>
+                <div class="col-8-lg content-container-text">
+                    <h3>A Powerful Platform For Your Team</h3>
+                    <hr />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </div>
+        </div>
+        <div class="content-container">
+            <div class="row centered-container larger-container">
+                <div class="col-4-lg content-container-img">
+                    <img src="/img/Resources/email-icon.png" />
+                </div>
+                <div class="col-8-lg content-container-text">
+                    <h3>All Of Your Networks In One Place</h3>
+                    <hr />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </div>
+        </div>
+        <div class="content-container">
+            <div class="row centered-container larger-container">
+                <div class="col-4-lg content-container-img">
+                    <img src="/img/Resources/responsive-web-design-icon.png" />
+                </div>
+                <div class="col-8-lg content-container-text">
+                    <h3>Everywhere, On Any Device</h3>
+                    <hr />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </div>
+        </div>
+    </main>
     <footer>
         <div id="footer-top">
             <div class="row" id="footer-top-wrapper">
@@ -54,6 +94,5 @@
             </div>
         </div>
     </footer>
-    <script src="/dist/js/app.js"></script>
 </body>
 </html>

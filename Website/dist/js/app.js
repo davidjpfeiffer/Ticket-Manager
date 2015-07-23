@@ -304,6 +304,475 @@ e,u,b)})}function l(){var a,b;d.forEach(h,function(c,h){var g;if(g=!b){var k=f.p
 h=f[1];c.push(b[h]);c.push(f[2]||"");delete b[h]}});return c.join("")}var w=!1,p,v,s={routes:h,reload:function(){w=!0;a.$evalAsync(function(){m();n()})},updateParams:function(a){if(this.current&&this.current.$$route)a=d.extend({},this.current.params,a),f.path(t(this.current.$$route.originalPath,a)),f.search(a);else throw B("norout");}};a.$on("$locationChangeStart",m);a.$on("$locationChangeSuccess",n);return s}]});var B=d.$$minErr("ngRoute");q.provider("$routeParams",function(){this.$get=function(){return{}}});
 q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScroll","$animate"];A.$inject=["$compile","$controller","$route"]})(window,window.angular);
 
+(function() {
+  'use strict';
+
+  angular.module('toastr', [])
+    .factory('toastr', toastr);
+
+  toastr.$inject = ['$animate', '$injector', '$document', '$rootScope', '$sce', 'toastrConfig', '$q'];
+
+  function toastr($animate, $injector, $document, $rootScope, $sce, toastrConfig, $q) {
+    var container;
+    var index = 0;
+    var toasts = [];
+
+    var previousToastMessage = '';
+    var openToasts = {};
+
+    var containerDefer = $q.defer();
+
+    var toast = {
+      clear: clear,
+      error: error,
+      info: info,
+      remove: remove,
+      success: success,
+      warning: warning
+    };
+
+    return toast;
+
+    /* Public API */
+    function clear(toast) {
+      if (toast) {
+        remove(toast.toastId);
+      } else {
+        for (var i = 0; i < toasts.length; i++) {
+          remove(toasts[i].toastId);
+        }
+      }
+    }
+
+    function error(message, title, optionsOverride) {
+      var type = _getOptions().iconClasses.error;
+      return _buildNotification(type, message, title, optionsOverride);
+    }
+
+    function info(message, title, optionsOverride) {
+      var type = _getOptions().iconClasses.info;
+      return _buildNotification(type, message, title, optionsOverride);
+    }
+
+    function success(message, title, optionsOverride) {
+      var type = _getOptions().iconClasses.success;
+      return _buildNotification(type, message, title, optionsOverride);
+    }
+
+    function warning(message, title, optionsOverride) {
+      var type = _getOptions().iconClasses.warning;
+      return _buildNotification(type, message, title, optionsOverride);
+    }
+
+    function remove(toastId, wasClicked) {
+      var toast = findToast(toastId);
+
+      if (toast && ! toast.deleting) { // Avoid clicking when fading out
+        toast.deleting = true;
+        toast.isOpened = false;
+        $animate.leave(toast.el).then(function() {
+          if (toast.scope.options.onHidden) {
+            toast.scope.options.onHidden(wasClicked);
+          }
+          toast.scope.$destroy();
+          var index = toasts.indexOf(toast);
+          delete openToasts[toast.scope.message];
+          toasts.splice(index, 1);
+          var maxOpened = toastrConfig.maxOpened;
+          if (maxOpened && toasts.length >= maxOpened) {
+            toasts[maxOpened - 1].open.resolve();
+          }
+          if (lastToast()) {
+            container.remove();
+            container = null;
+            containerDefer = $q.defer();
+          }
+        });
+      }
+
+      function findToast(toastId) {
+        for (var i = 0; i < toasts.length; i++) {
+          if (toasts[i].toastId === toastId) {
+            return toasts[i];
+          }
+        }
+      }
+
+      function lastToast() {
+        return !toasts.length;
+      }
+    }
+
+    /* Internal functions */
+    function _buildNotification(type, message, title, optionsOverride)
+    {
+      if (angular.isObject(title)) {
+        optionsOverride = title;
+        title = null;
+      }
+
+      return _notify({
+        iconClass: type,
+        message: message,
+        optionsOverride: optionsOverride,
+        title: title
+      });
+    }
+
+    function _getOptions() {
+      return angular.extend({}, toastrConfig);
+    }
+
+    function _createOrGetContainer(options) {
+      if(container) { return containerDefer.promise; }
+
+      container = angular.element('<div></div>');
+      container.attr('id', options.containerId);
+      container.addClass(options.positionClass);
+      container.css({'pointer-events': 'auto'});
+
+      var target = angular.element(document.querySelector(options.target));
+
+      if ( ! target || ! target.length) {
+        throw 'Target for toasts doesn\'t exist';
+      }
+
+      $animate.enter(container, target).then(function() {
+        containerDefer.resolve();
+      });
+
+      return containerDefer.promise;
+    }
+
+    function _notify(map) {
+      var options = _getOptions();
+
+      if (shouldExit()) { return; }
+
+      var newToast = createToast();
+
+      toasts.push(newToast);
+
+      if (options.autoDismiss && options.maxOpened > 0) {
+        var oldToasts = toasts.slice(0, (toasts.length - options.maxOpened));
+        for (var i = 0, len = oldToasts.length; i < len; i++) {
+          remove(oldToasts[i].toastId);
+        }
+      }
+
+      if (maxOpenedNotReached()) {
+        newToast.open.resolve();
+      }
+
+      newToast.open.promise.then(function() {
+        _createOrGetContainer(options).then(function() {
+          newToast.isOpened = true;
+          if (options.newestOnTop) {
+            $animate.enter(newToast.el, container).then(function() {
+              newToast.scope.init();
+            });
+          } else {
+            var sibling = container[0].lastChild ? angular.element(container[0].lastChild) : null;
+            $animate.enter(newToast.el, container, sibling).then(function() {
+              newToast.scope.init();
+            });
+          }
+        });
+      });
+
+      return newToast;
+
+      function createScope(toast, map, options) {
+        if (options.allowHtml) {
+          toast.scope.allowHtml = true;
+          toast.scope.title = $sce.trustAsHtml(map.title);
+          toast.scope.message = $sce.trustAsHtml(map.message);
+        } else {
+          toast.scope.title = map.title;
+          toast.scope.message = map.message;
+        }
+
+        toast.scope.toastType = toast.iconClass;
+        toast.scope.toastId = toast.toastId;
+
+        toast.scope.options = {
+          extendedTimeOut: options.extendedTimeOut,
+          messageClass: options.messageClass,
+          onHidden: options.onHidden,
+          onShown: options.onShown,
+          progressBar: options.progressBar,
+          tapToDismiss: options.tapToDismiss,
+          timeOut: options.timeOut,
+          titleClass: options.titleClass,
+          toastClass: options.toastClass
+        };
+
+        if (options.closeButton) {
+          toast.scope.options.closeHtml = options.closeHtml;
+        }
+      }
+
+      function createToast() {
+        var newToast = {
+          toastId: index++,
+          isOpened: false,
+          scope: $rootScope.$new(),
+          open: $q.defer()
+        };
+        newToast.iconClass = map.iconClass;
+        if (map.optionsOverride) {
+          options = angular.extend(options, cleanOptionsOverride(map.optionsOverride));
+          newToast.iconClass = map.optionsOverride.iconClass || newToast.iconClass;
+        }
+
+        createScope(newToast, map, options);
+
+        newToast.el = createToastEl(newToast.scope);
+
+        return newToast;
+
+        function cleanOptionsOverride(options) {
+          var badOptions = ['containerId', 'iconClasses', 'maxOpened', 'newestOnTop',
+                            'positionClass', 'preventDuplicates', 'preventOpenDuplicates', 'templates'];
+          for (var i = 0, l = badOptions.length; i < l; i++) {
+            delete options[badOptions[i]];
+          }
+
+          return options;
+        }
+      }
+
+      function createToastEl(scope) {
+        var angularDomEl = angular.element('<div toast></div>'),
+          $compile = $injector.get('$compile');
+        return $compile(angularDomEl)(scope);
+      }
+
+      function maxOpenedNotReached() {
+        return options.maxOpened && toasts.length <= options.maxOpened || !options.maxOpened;
+      }
+
+      function shouldExit() {
+        var isDuplicateOfLast = options.preventDuplicates && map.message === previousToastMessage;
+        var isDuplicateOpen = options.preventOpenDuplicates && openToasts[map.message];
+
+        if (isDuplicateOfLast || isDuplicateOpen) {
+          return true;
+        }
+
+        previousToastMessage = map.message;
+        openToasts[map.message] = true;
+
+        return false;
+      }
+    }
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('toastr')
+    .constant('toastrConfig', {
+      allowHtml: false,
+      autoDismiss: false,
+      closeButton: false,
+      closeHtml: '<button>&times;</button>',
+      containerId: 'toast-container',
+      extendedTimeOut: 1000,
+      iconClasses: {
+        error: 'toast-error',
+        info: 'toast-info',
+        success: 'toast-success',
+        warning: 'toast-warning'
+      },
+      maxOpened: 0,
+      messageClass: 'toast-message',
+      newestOnTop: true,
+      onHidden: null,
+      onShown: null,
+      positionClass: 'toast-top-right',
+      preventDuplicates: false,
+      preventOpenDuplicates: false,
+      progressBar: false,
+      tapToDismiss: true,
+      target: 'body',
+      templates: {
+        toast: 'directives/toast/toast.html',
+        progressbar: 'directives/progressbar/progressbar.html'
+      },
+      timeOut: 5000,
+      titleClass: 'toast-title',
+      toastClass: 'toast'
+    });
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('toastr')
+    .directive('progressBar', progressBar);
+
+  progressBar.$inject = ['toastrConfig'];
+
+  function progressBar(toastrConfig) {
+    return {
+      replace: true,
+      require: '^toast',
+      templateUrl: function() {
+        return toastrConfig.templates.progressbar;
+      },
+      link: linkFunction
+    };
+
+    function linkFunction(scope, element, attrs, toastCtrl) {
+      var intervalId, currentTimeOut, hideTime;
+
+      toastCtrl.progressBar = scope;
+
+      scope.start = function(duration) {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+
+        currentTimeOut = parseFloat(duration);
+        hideTime = new Date().getTime() + currentTimeOut;
+        intervalId = setInterval(updateProgress, 10);
+      };
+
+      scope.stop = function() {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      };
+
+      function updateProgress() {
+        var percentage = ((hideTime - (new Date().getTime())) / currentTimeOut) * 100;
+        element.css('width', percentage + '%');
+      }
+
+      scope.$on('$destroy', function() {
+        // Failsafe stop
+        clearInterval(intervalId);
+      });
+    }
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('toastr')
+    .controller('ToastController', ToastController);
+
+  function ToastController() {
+    this.progressBar = null;
+
+    this.startProgressBar = function(duration) {
+      if (this.progressBar) {
+        this.progressBar.start(duration);
+      }
+    };
+
+    this.stopProgressBar = function() {
+      if (this.progressBar) {
+        this.progressBar.stop();
+      }
+    };
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('toastr')
+    .directive('toast', toast);
+
+  toast.$inject = ['$injector', '$interval', 'toastrConfig', 'toastr'];
+
+  function toast($injector, $interval, toastrConfig, toastr) {
+    return {
+      replace: true,
+      templateUrl: function() {
+        return toastrConfig.templates.toast;
+      },
+      controller: 'ToastController',
+      link: toastLinkFunction
+    };
+
+    function toastLinkFunction(scope, element, attrs, toastCtrl) {
+      var timeout;
+
+      scope.toastClass = scope.options.toastClass;
+      scope.titleClass = scope.options.titleClass;
+      scope.messageClass = scope.options.messageClass;
+      scope.progressBar = scope.options.progressBar;
+
+      if (wantsCloseButton()) {
+        var button = angular.element(scope.options.closeHtml),
+          $compile = $injector.get('$compile');
+        button.addClass('toast-close-button');
+        button.attr('ng-click', 'close()');
+        $compile(button)(scope);
+        element.prepend(button);
+      }
+
+      scope.init = function() {
+        if (scope.options.timeOut) {
+          timeout = createTimeout(scope.options.timeOut);
+        }
+        if (scope.options.onShown) {
+          scope.options.onShown();
+        }
+      };
+
+      element.on('mouseenter', function() {
+        hideAndStopProgressBar();
+        if (timeout) {
+          $interval.cancel(timeout);
+        }
+      });
+
+      scope.tapToast = function () {
+        if (scope.options.tapToDismiss) {
+          scope.close(true);
+        }
+      };
+
+      scope.close = function (wasClicked) {
+        toastr.remove(scope.toastId, wasClicked);
+      };
+
+      element.on('mouseleave', function() {
+        if (scope.options.timeOut === 0 && scope.options.extendedTimeOut === 0) { return; }
+        scope.$apply(function() {
+          scope.progressBar = scope.options.progressBar;
+        });
+        timeout = createTimeout(scope.options.extendedTimeOut);
+      });
+
+      function createTimeout(time) {
+        toastCtrl.startProgressBar(time);
+        return $interval(function() {
+          toastCtrl.stopProgressBar();
+          toastr.remove(scope.toastId);
+        }, time, 1);
+      }
+
+      function hideAndStopProgressBar() {
+        scope.progressBar = false;
+        toastCtrl.stopProgressBar();
+      }
+
+      function wantsCloseButton() {
+        return scope.options.closeHtml;
+      }
+    }
+  }
+}());
+
+angular.module("toastr").run(["$templateCache", function($templateCache) {$templateCache.put("directives/progressbar/progressbar.html","<div class=\"toast-progress\"></div>\n");
+$templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{toastType}}\" ng-click=\"tapToast()\">\n  <div ng-switch on=\"allowHtml\">\n    <div ng-switch-default ng-if=\"title\" class=\"{{titleClass}}\">{{title}}</div>\n    <div ng-switch-default class=\"{{messageClass}}\">{{message}}</div>\n    <div ng-switch-when=\"true\" ng-if=\"title\" class=\"{{titleClass}}\" ng-bind-html=\"title\"></div>\n    <div ng-switch-when=\"true\" class=\"{{messageClass}}\" ng-bind-html=\"message\"></div>\n  </div>\n  <progress-bar ng-if=\"progressBar\"></progress-bar>\n</div>\n");}]);
 !function(e) { if ("object" == typeof exports && "undefined" != typeof module) module.exports = e(); else if ("function" == typeof define && define.amd) define([], e); else { var f; "undefined" != typeof window ? f = window : "undefined" != typeof global ? f = global : "undefined" != typeof self && (f = self), f.io = e() } }(function() {
     var define, module, exports; return (function e(t, n, r) { function s(o, u) { if (!n[o]) { if (!t[o]) { var a = typeof require == "function" && require; if (!u && a) return a(o, !0); if (i) return i(o, !0); throw new Error("Cannot find module '" + o + "'") } var f = n[o] = { exports: {} }; t[o][0].call(f.exports, function(e) { var n = t[o][1][e]; return s(n ? n : e) }, f, f.exports, e, t, n, r) } return n[o].exports } var i = typeof require == "function" && require; for (var o = 0; o < r.length; o++) s(r[o]); return s })({
         1: [function(_dereq_, module, exports) {
@@ -7317,124 +7786,7 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
     'use strict';
 
     angular
-        .module('app', ['ngRoute']);
-}());
-
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .config(config)
-        .run(check);
-
-    config.$inject = ['$routeProvider', '$locationProvider'];
-
-    function config($routeProvider, $locationProvider) {
-        $routeProvider
-        .when('/', {
-            templateUrl: 'homepage.html'
-        })
-        .when('/login', {
-            templateUrl: 'login.html',
-            controller: 'loginFormController',
-            controllerAs: 'vm'
-        })
-        .when('/register', {
-            templateUrl: 'register.html'
-        })
-        .when('/app/dashboard', {
-            templateUrl: '/app/dashboard/dashboard.html'
-        })
-        .when('/app/tickets', {
-            templateUrl: '/app/tickets/tickets.html',
-            controller: 'ticketsController',
-            controllerAs: 'vm'
-        })
-        .when('/app/tickets/new', {
-            templateUrl: '/app/tickets/newTicket.html',
-            controller: 'newTicketController',
-            controllerAs: 'vm'
-        })
-        .when('/app/tickets/:ticketId', {
-            templateUrl: '/app/tickets/ticket.html',
-            controller: 'ticketController',
-            controllerAs: 'vm'
-        })
-        .when('/app/tickets/:ticketId/edit', {
-            templateUrl: '/app/tickets/editTicket.html',
-            controller: 'editTicketController',
-            controllerAs: 'vm'
-        })
-        .when('/app/tickets/:ticketId/update', {
-            templateUrl: '/app/tickets/updateTicket.html',
-            controller: 'ticketController',
-            controllerAs: 'vm'
-        })
-        .when('/app/categories', {
-            templateUrl: '/app/categories/categories.html',
-            controller: 'categoriesController',
-            controllerAs: 'vm'
-        })
-        .when('/app/categories/new', {
-            templateUrl: '/app/categories/newCategory.html',
-            controller: 'newCategoryController',
-            controllerAs: 'vm'
-        })
-        .when('/app/categories/:categoryId', {
-            templateUrl: '/app/categories/category.html',
-            controller: 'categoryController',
-            controllerAs: 'vm'
-        })
-        .when('/app/categories/:categoryId/edit', {
-            templateUrl: '/app/categories/editCategory.html',
-            controller: 'editCategoryController',
-            controllerAs: 'vm'
-        })
-        .when('/app/users', {
-            templateUrl: '/app/users/users.html',
-            controller: 'usersController',
-            controllerAs: 'vm'
-        })
-        .when('/app/users/new', {
-            templateUrl: '/app/users/newUser.html',
-            controller: 'newUserController',
-            controllerAs: 'vm'
-        })
-        .when('/app/users/:userId', {
-            templateUrl: '/app/users/user.html',
-            controller: 'userController',
-            controllerAs: 'vm'
-        })
-        .when('/app/users/:userId/edit', {
-            templateUrl: '/app/users/editUser.html',
-            controller: 'editUserController',
-            controllerAs: 'vm'
-        })
-        .when('/app/chat', {
-            templateUrl: '/app/chat/chat.html',
-        })
-        .otherwise({
-            redirectTo: '/app/dashboard'
-        });
-
-        $locationProvider.html5Mode(true);
-    }
-
-    check.$inject = ['$rootScope', '$location', 'authenticationService'];
-
-    function check($rootScope, $location, authenticationService) {
-        $rootScope.$on('$routeChangeStart', function() {
-            var account = authenticationService.getAuthenticatedAccount();
-
-            if (account === null && (window.location.href.indexOf('app') > -1)) {
-                window.location.href = "/";
-                console.log('Route Unauthenticated');
-            } else {
-                console.log('Route Authenticated');
-            }
-        });
-    }
+        .module('app', ['ngRoute', 'toastr']);
 }());
 
 (function() {
@@ -7535,6 +7887,180 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
 
     angular
         .module('app')
+        .config(config)
+        .run(check);
+
+    config.$inject = ['$routeProvider', '$locationProvider', 'toastrConfig'];
+
+    function config($routeProvider, $locationProvider, toastrConfig) {
+        $routeProvider
+        .when('/app/dashboard', {
+            templateUrl: '/app/dashboard/dashboard.html'
+        })
+        .when('/app/tickets', {
+            templateUrl: '/app/tickets/tickets.html',
+            controller: 'ticketsController',
+            controllerAs: 'vm'
+        })
+        .when('/app/tickets/new', {
+            templateUrl: '/app/tickets/newTicket.html',
+            controller: 'newTicketController',
+            controllerAs: 'vm'
+        })
+        .when('/app/tickets/:ticketId', {
+            templateUrl: '/app/tickets/ticket.html',
+            controller: 'ticketController',
+            controllerAs: 'vm'
+        })
+        .when('/app/tickets/:ticketId/edit', {
+            templateUrl: '/app/tickets/editTicket.html',
+            controller: 'editTicketController',
+            controllerAs: 'vm'
+        })
+        .when('/app/tickets/:ticketId/update', {
+            templateUrl: '/app/tickets/updateTicket.html',
+            controller: 'ticketController',
+            controllerAs: 'vm'
+        })
+        .when('/app/categories', {
+            templateUrl: '/app/categories/categories.html',
+            controller: 'categoriesController',
+            controllerAs: 'vm'
+        })
+        .when('/app/categories/new', {
+            templateUrl: '/app/categories/newCategory.html',
+            controller: 'newCategoryController',
+            controllerAs: 'vm'
+        })
+        .when('/app/categories/:categoryId', {
+            templateUrl: '/app/categories/category.html',
+            controller: 'categoryController',
+            controllerAs: 'vm'
+        })
+        .when('/app/categories/:categoryId/edit', {
+            templateUrl: '/app/categories/editCategory.html',
+            controller: 'editCategoryController',
+            controllerAs: 'vm'
+        })
+        .when('/app/users', {
+            templateUrl: '/app/users/users.html',
+            controller: 'usersController',
+            controllerAs: 'vm'
+        })
+        .when('/app/users/new', {
+            templateUrl: '/app/users/newUser.html',
+            controller: 'newUserController',
+            controllerAs: 'vm'
+        })
+        .when('/app/users/:userId', {
+            templateUrl: '/app/users/user.html',
+            controller: 'userController',
+            controllerAs: 'vm'
+        })
+        .when('/app/users/:userId/edit', {
+            templateUrl: '/app/users/editUser.html',
+            controller: 'editUserController',
+            controllerAs: 'vm'
+        })
+        .when('/app/messages', {
+            templateUrl: '/app/messages/messages.html',
+            controller: 'usersController',
+            controllerAs: 'vm'
+        })
+        .when('/app/messages/:recipientId', {
+            templateUrl: '/app/messages/message.html',
+            controller: 'messageController',
+            controllerAs: 'vm'
+        })
+        .otherwise({
+            redirectTo: '/app/dashboard'
+        });
+
+        $locationProvider.html5Mode(true);
+
+        angular.extend(toastrConfig, {
+            allowHtml: true,
+            autoDismiss: false,
+            closeButton: true,
+            closeHtml: '<button>&times;</button>',
+            containerId: 'toast-container',
+            extendedTimeOut: 1000,
+            iconClasses: {
+                error: 'toast-error',
+                info: 'toast-info',
+                success: 'toast-success',
+                warning: 'toast-warning'
+            },
+            maxOpened: 0,    
+            messageClass: 'toast-message',
+            newestOnTop: true,
+            onHidden: null,
+            onShown: null,
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: false,
+            preventOpenDuplicates: false,
+            progressBar: false,
+            tapToDismiss: true,
+            target: 'body',
+            templates: {
+                toast: 'directives/toast/toast.html',
+                progressbar: 'directives/progressbar/progressbar.html'
+            },
+            timeOut: 5000,
+            titleClass: 'toast-title',
+            toastClass: 'toast'
+        });
+    }
+
+    check.$inject = ['$rootScope', '$location', 'authenticationService'];
+
+    function check($rootScope, $location, authenticationService) {
+        $rootScope.$on('$routeChangeStart', function() {
+            var account = authenticationService.getAuthenticatedAccount();
+
+            if (account === null && (window.location.href.indexOf('app') > -1)) {
+                window.location.href = "/";
+                console.log('Route Unauthenticated');
+            } else {
+                console.log('Route Authenticated');
+            }
+        });
+    }
+}());
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('mainController', mainController);
+
+    mainController.$inject = ['authenticationService', 'messageService', 'toastr'];
+
+    function mainController(authenticationService, messageService, toastr) {
+        var main = this;
+        main.account = {};
+        main.logout = authenticationService.logout;
+        main.mySocket = {};
+
+        activate();
+
+        function activate() {
+            main.account = authenticationService.getAuthenticatedAccount();
+            messageService.connectToChat(main.account);
+            main.mySocket = messageService.socket;
+            main.mySocket.on('private message', function(message) {
+                messageService.addNewMessage(message);
+                toastr.success('From ' + message.sender, 'New Message');
+            });
+        };
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .factory('authenticationService', authenticationService);
 
     authenticationService.$inject = ['$http', 'userService'];
@@ -7612,146 +8138,32 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
 
     angular
         .module('app')
-        .controller('mainController', mainController);
+        .controller('registerFormController', registerFormController);
 
-    mainController.$inject = ['authenticationService', 'chatService'];
+    registerFormController.$inject = ['$scope', 'authenticationService', '$location'];
 
-    function mainController(authenticationService, chatService) {
-        var main = this;
-        main.account = {};
-        main.logout = authenticationService.logout;
+    function registerFormController($scope, authenticationService, $location) {
+        $scope.email;
+        $scope.password;
+        $scope.submit = submit;
 
-        activate();
+        function submit() {
+            authenticationService.login($scope.email, $scope.password).then(onSuccess, onFail);
 
-        function activate() {
-            main.account = authenticationService.getAuthenticatedAccount();
-            chatService.connectToChat(main.account);
-        };
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('chatController', chatController);
-
-    chatController.$inject = ['$scope', 'authenticationService', 'chatService', 'userService'];
-
-    function chatController($scope, authenticationService, chatService, userService) {
-        var vm = this;
-        vm.mySocket = {};
-        vm.userAccount = {};
-        vm.userMessage = '';
-        vm.recipient = {};
-        vm.businessRoom = '';
-        vm.allMessages = {};
-        vm.currentMessages = [];
-        vm.sendMessage = sendMessage;
-        vm.updateChatSettings = updateChatSettings;
-        vm.onlineUsers = {};
-        vm.allUsers = [];
-
-        activate();
-
-        function sendMessage() {
-            if (vm.recipient != null) {
-                vm.mySocket.emit('private message', { recipient: vm.recipient, content: vm.userMessage });
-                if (!vm.allMessages[vm.recipient.id]) {
-                    vm.allMessages[vm.recipient.id] = [];
+            function onSuccess(user) {
+                if (user == null) {
+                    console.error('User was not authenticated.');
                 }
-                vm.allMessages[vm.recipient.id].push({ sender: vm.userAccount, recipient: vm.recipient, content: vm.userMessage });
-                updateChatSettings();
-                vm.userMessage = '';
+                else {
+                    $location.path('/app/dashboard');
+                }
+            }
 
-                console.log(vm.currentMessages);
+            function onFail() {
+                console.error('Server error.');
             }
         }
-
-        function updateChatSettings() {
-            vm.currentMessages = [];
-            if (vm.allMessages[vm.recipient.id]) {
-                vm.allMessages[vm.recipient.id].forEach(addToCurrentMessages);
-            }
-        }
-
-        function addToCurrentMessages(message) {
-            vm.currentMessages.push(message);
-        }
-
-        function activate() {
-            var authAccount = authenticationService.getAuthenticatedAccount();
-            vm.userAccount.userName = authAccount.firstName + ' ' + authAccount.lastName;
-            vm.userAccount.id = authAccount.id;
-            vm.userAccount.businessId = authAccount.businessId;
-            vm.businessRoom = 'business' + vm.userAccount.businessId;
-            vm.mySocket = chatService.socket;
-            userService.getUsers()
-            .then(function(response) {
-                response.forEach(createNewUsers);
-                vm.recipient = vm.allUsers[0];
-            });
-
-            vm.mySocket.emit('join room', vm.businessRoom);
-
-            vm.mySocket.on('group message', function(message) {
-                vm.currentMessages.push({ sender: message.sender, content: message.content });
-                $scope.$apply();
-            });
-
-            vm.mySocket.on('private message', function(message) {
-                vm.allUsers.forEach(updateCurrentRecipient);
-
-                function updateCurrentRecipient(user) {
-                    if (user.id === message.sender.id) {
-                        vm.recipient = user;
-                    }
-                }
-
-                //vm.recipient = message.sender;
-                if (!vm.allMessages[vm.recipient.id]) {
-                    vm.allMessages[vm.recipient.id] = [];
-                }
-
-                vm.allMessages[vm.recipient.id].push({ sender: message.sender, recipient: vm.userAccount.id, content: message.content });
-                updateChatSettings();
-                $scope.$apply();
-            });
-
-            vm.mySocket.on('update online users', function(userBase) {
-                vm.onlineUsers = userBase;
-                $scope.$apply();
-            });
-        }
-
-        function createNewUsers(user) {
-            vm.allUsers.push({ userName: user.firstName + ' ' + user.lastName, id: user.id, businessId: user.businessId });
-        };
     }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .factory('chatService', chatService);
-
-    chatService.$inject = ['authenticationService'];
-
-    function chatService(authenticationService) {
-        var service = {
-            connectToChat: connectToChat,
-            socket: null
-    };
-    return service;
-
-    function connectToChat(account) {
-        if (service.socket === null) {
-            service.socket = io.connect('http://localhost:3000');
-            service.socket.emit('add user to chat', account);
-        }
-    }
-}
 }());
 (function() {
     'use strict';
@@ -7904,6 +8316,138 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
             var account = authenticationService.getAuthenticatedAccount();
                 categoryService.createCategory({ 'name': name, 'businessId': account.businessId })
                 .then(function() { $window.location.href = '/app/categories'; });
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('messageController', messageController);
+
+    messageController.$inject = ['$scope', '$routeParams', 'authenticationService', 'messageService', 'userService'];
+
+    function messageController($scope, $routeParams, authenticationService, messageService, userService) {
+        var vm = this;
+        vm.socket = {};
+        vm.account = {};
+        vm.recipient = null;
+        vm.messages = [];
+        vm.message = '';
+        vm.sendMessage = sendMessage;
+
+        activate();
+
+        function sendMessage() {
+            var message = { recipientId: vm.recipient.id, senderId: vm.account.id, sender: vm.account.userName, content: vm.message };
+            vm.messages.push(message)
+            messageService.sendMessage(message);
+            vm.message = '';
+        }
+
+        function activate() {
+            // Get This Users Socket
+            vm.socket = messageService.socket;
+
+            // Get This Users Account
+            vm.account = authenticationService.getAuthenticatedAccount();
+            vm.account.userName = vm.account.firstName + ' ' + vm.account.lastName;
+            delete vm.account.firstName;
+            delete vm.account.lastName;
+
+            // Get Recipients Account
+            userService.getUser($routeParams.recipientId)
+            .then(function(user) {
+                vm.recipient = user;
+                vm.recipient.userName = vm.recipient.firstName + ' ' + vm.recipient.lastName;
+                delete vm.recipient.firstName;
+                delete vm.recipient.lastName;
+            });
+
+            // Get Messages In This Conversation
+            messageService.getConversation(vm.account.id, $routeParams.recipientId)
+            .then(function(messages) {
+                console.log(messages);
+                messages.forEach(function(message) { vm.messages.push(message); });
+            });
+
+            vm.socket.on('private message', function(message) {
+                vm.messages.push(message);
+                $scope.$apply();
+            });
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .factory('messageService', messageService);
+
+    messageService.$inject = ['$http', '$q', 'authenticationService'];
+
+    function messageService($http, $q, authenticationService) {
+        var service = {
+            connectToChat: connectToChat,
+            getConversation: getConversation,
+            addNewMessage: addNewMessage,
+            sendMessage: sendMessage,
+            socket: null,
+            allMessages: null
+        };
+        return service;
+
+        function connectToChat(account) {
+            if (account.accountType === 'user') {
+                if (service.socket === null) {
+                    service.socket = io.connect('http://localhost:3000');
+                    service.socket.emit('add user to chat', account);
+                    service.allMessages = {};
+                }
+            }
+        }
+
+        function getConversation(senderId, recipientId) {
+            if (recipientId in service.allMessages) {
+                var deferred = $q.defer();
+                deferred.resolve(service.allMessages[recipientId]);
+                return deferred.promise;
+            }
+            else {
+                service.allMessages[recipientId] = [];
+                return $http.get('http://localhost:2004/messages/' + senderId + '/' + recipientId)
+                .then(function(response) {
+                    response.data.forEach(function(message) { service.allMessages[recipientId].push(message); });
+                    return response.data;
+                });
+            }
+        }
+
+        function addNewMessage(message) {
+            if (message.senderId in service.allMessages) {
+                service.allMessages[message.senderId].push(message);
+            }
+            else {
+                service.allMessages[message.senderId] = [];
+                $http.get('http://localhost:2004/messages/' + message.recipientId + '/' + message.senderId)
+                .then(function(response) {
+                    response.data.forEach(function(message) { service.allMessages[message.senderId].push(message); });
+                    service.allMessages[message.senderId].push(message);
+                });
+            }
+        }
+
+        function sendMessage(message) {
+            // Save message locally to keep allMessages up to date
+            service.allMessages[message.recipientId].push(message);
+            // Save message on node server
+            service.socket.emit('private message', message);
+
+            // Send Message to Database
+            // IDEA: We could send the message to the database from the node server in batches
+            return $http.post('http://localhost:2004/messages', message);
         }
     }
 }());
@@ -8305,6 +8849,24 @@ q.directive("ngView",v);q.directive("ngView",A);v.$inject=["$route","$anchorScro
             templateUrl: '/app/categories/directives/category-list-item.directive.html',
             scope: {
                 category: '='
+            }
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('messageListItem', messageListItem);
+
+    function messageListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/messages/directives/message-list-item.directive.html',
+            scope: {
+                user: '='
             }
         }
     }

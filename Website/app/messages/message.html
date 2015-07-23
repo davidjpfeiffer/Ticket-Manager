@@ -1,0 +1,14 @@
+﻿<div class="title-bar">
+    <h2>{{ 'Messages with ' + vm.recipient.userName }}</h2>
+</div>
+<div class="main-content chat">
+    <div class="chat-window">
+        <ul>
+            <li ng-repeat="message in vm.messages"><b>{{ message.sender + ': ' }}</b>{{ message.content }}</li>
+        </ul>
+        <form ng-submit="vm.sendMessage()">
+            <input ng-model="vm.message" required />
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+</div>
