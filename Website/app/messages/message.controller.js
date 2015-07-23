@@ -20,9 +20,17 @@
 
         function sendMessage() {
             var message = { recipientId: vm.recipient.id, senderId: vm.account.id, sender: vm.account.userName, content: vm.message };
-            vm.messages.push(message)
+            vm.messages.push(message);
             messageService.sendMessage(message);
             vm.message = '';
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            setTimeout(function() {
+                var textarea = document.getElementById('messageBox');
+                textarea.scrollTop = textarea.scrollHeight;
+            }, 0);
         }
 
         function activate() {
@@ -47,13 +55,13 @@
             // Get Messages In This Conversation
             messageService.getConversation(vm.account.id, $routeParams.recipientId)
             .then(function(messages) {
-                console.log(messages);
-                messages.forEach(function(message) { vm.messages.push(message); });
+                vm.messages = messages;
+                scrollToBottom();
             });
 
             vm.socket.on('private message', function(message) {
                 vm.messages.push(message);
-                $scope.$apply();
+                scrollToBottom();
             });
         }
     }

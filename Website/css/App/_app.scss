@@ -38,10 +38,10 @@
     }
 
     .main-content {
-        margin: 20px;
+        margin: 15px;
     }
 
-    ul.main-list {
+    .main-list {
         list-style: none;
         padding: 0;
         margin: 0;
@@ -56,7 +56,7 @@
                 border-radius: 5px;
                 color: $primary-color;
 
-                &:hover {
+                &:hover, &:focus {
                     background-color: #eee;
                 }
             }
@@ -87,8 +87,6 @@
     }
 }
 
-
-
 /*****************************************
     Small Breakpoint
 *****************************************/
@@ -114,12 +112,10 @@
         max-width: calc(100% - 200px);
 
         #page-with-search-bar {
-            max-height: calc(100% - 198px);
+            height: calc(100% - 178px);
         }
 
         .main-content {
-            margin: 25px;
-            max-height: calc(100% - 130px);
             overflow-x: hidden;
             overflow-y: scroll;
 
@@ -141,7 +137,7 @@
             }
         }
 
-        ul.main-list {
+        .main-list {
             max-height: 100%;
         }
 
@@ -175,16 +171,24 @@
     .app-content {
         overflow: auto;
 
-        #page-with-search-bar {
-            height: calc(100% - 192px);
+        .main-content {
+            height: calc(100% - 110px);
+            padding-right: 200px;
         }
+    }
+}
+
+/*****************************************
+    EXTRA EXTRA Large Breakpoint
+*****************************************/
+@media screen and (min-width: 1600px) {
+
+    .app-content {
+        overflow: auto;
 
         .main-content {
-            height: calc(100% - 124px);
-        }
-
-        ul.main-list {
-            width: calc(100% - 375px);
+            height: calc(100% - 110px);
+            width: 1500px;
         }
     }
 }

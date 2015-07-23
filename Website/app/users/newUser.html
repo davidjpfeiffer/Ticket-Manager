@@ -1,14 +1,17 @@
-﻿<div class="app-form-wrapper">
+﻿<div class="title-bar">
     <h2>New User</h2>
-    <form ng-submit="vm.createNewUser(firstName, lastName, email, password)">
-        <label>First Name</label><br />
-        <input type="text" ng-model="firstName" required /><br />
-        <label>Last Name</label><br />
-        <input type="text" ng-model="lastName" required /><br />
-        <label>Email</label><br />
-        <input type="email" ng-model="email" required /><br />
-        <label>Password</label><br />
-        <input type="password" ng-model="password" required /><br />
-        <button type="submit">Create</button>
+    <span>
+        <a ng-click="vm.createNewUser()" class="main-button green">Create User</a>
+    </span>
+</div>
+<div class="main-content">
+    <form class="content">
+        <input placeholder="First Name..." type="text" ng-model="vm.user.firstName" required />
+        <input placeholder="Last Name..." type="text" ng-model="vm.user.lastName" required />
+        <hr />
+        <div class="meta-data">
+            <input placeholder="Email Address..." type="text" ng-model="vm.user.email" />
+            <input placeholder="Password..." type="text" ng-model="vm.user.password" />
+        </div>
     </form>
 </div>

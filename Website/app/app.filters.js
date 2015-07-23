@@ -34,7 +34,6 @@
 
             return result;
         };
-
     })
 
     .filter('searchCategories', function() {
@@ -58,7 +57,6 @@
 
             return result;
         };
-
     })
 
     .filter('searchUsers', function() {
@@ -87,7 +85,38 @@
 
             return result;
         };
+    })
 
-    });
+    //.filter('searchMessages', function() {
+
+    //    return function(list, query) {
+
+    //        if (!query) {
+    //            return list;
+    //        }
+
+    //        var result = [];
+
+    //        query = query.toLowerCase();
+
+    //        angular.forEach(list, function(item) {
+
+    //            if (item.title.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //            else if (item.content.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //            else if (item.priority.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //            else if (item.category.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //        });
+
+    //        return result;
+    //    };
+    //});
 
 }());

@@ -1,7 +1,9 @@
 ﻿<div class="title-bar">
     <h2>User Details</h2>
-    <a ng-click="vm.deleteUser()" ng-show="main.account.accountType === 'business'" class="main-button red">Delete User</a>
-    <a ng-href="/app/users/{{ vm.user.id }}/edit" ng-show="main.account.accountType === 'business'" class="main-button">Edit User</a>
+    <span>
+        <a ng-href="/app/users/{{ vm.user.id }}/edit" ng-show="main.account.accountType === 'business'" class="main-button">Edit User</a>
+        <a href="/app/users" ng-click="vm.deleteUser()" ng-show="main.account.accountType === 'business'" class="main-button red">Delete User</a>
+    </span>
 </div>
 <div class="main-content">
     <form class="content">

@@ -12,9 +12,9 @@
         vm.businessId;
         vm.createNewCategory = createNewCategory;
 
-        function createNewCategory(name) {
+        function createNewCategory() {
             var account = authenticationService.getAuthenticatedAccount();
-                categoryService.createCategory({ 'name': name, 'businessId': account.businessId })
+                categoryService.createCategory({ 'name': vm.name, 'businessId': account.businessId })
                 .then(function() { $window.location.href = '/app/categories'; });
         }
     }

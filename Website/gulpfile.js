@@ -15,6 +15,8 @@ gulp.task('concatScripts', function() {
         './js/toastr/angular-toastr.tpls.js',
         './js/socket-io/client-socket-io.js',
         './app/app.module.js',
+        './app/app.filters.js',
+        './app/app.config.js',
         './account/authentication.service.js',
         './account/loginForm.controller.js',
         './chat.service.js',

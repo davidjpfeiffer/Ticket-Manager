@@ -70,7 +70,7 @@
     </Content>
     <Content Include="app\app.filters.js" />
     <Content Include="app\app.module.js" />
-    <Content Include="app\app.routes.js" />
+    <Content Include="app\app.config.js" />
     <Content Include="app\categories\categories.controller.js" />
     <Content Include="app\categories\categories.html" />
     <Content Include="app\categories\category.controller.js" />
@@ -102,7 +102,6 @@
     <Content Include="app\users\user.html" />
     <Content Include="app\users\users.controller.js" />
     <Content Include="app\users\users.html" />
-    <Content Include="app\conversations\conversations.html" />
     <Content Include="app\tickets\newTicket.controller.js" />
     <Content Include="app\tickets\newTicket.html" />
     <Content Include="app\tickets\directives\ticket-list-item.directive.html" />
@@ -122,6 +121,7 @@
     <Content Include="homepage.html" />
     <Content Include="app\account\authentication.service.js" />
     <Content Include="app\account\loginForm.controller.js" />
+    <Content Include="img\Resources\menu-icon.png" />
     <Content Include="img\ticket_manager_logo.png" />
     <Content Include="js\socket-io\client-socket-io.js" />
     <Content Include="app\account\registerForm.controller.js" />

@@ -35,10 +35,9 @@
                 return deferred.promise;
             }
             else {
-                service.allMessages[recipientId] = [];
                 return $http.get('http://localhost:2004/messages/' + senderId + '/' + recipientId)
                 .then(function(response) {
-                    response.data.forEach(function(message) { service.allMessages[recipientId].push(message); });
+                    service.allMessages[recipientId] = response.data;
                     return response.data;
                 });
             }
@@ -49,10 +48,9 @@
                 service.allMessages[message.senderId].push(message);
             }
             else {
-                service.allMessages[message.senderId] = [];
                 $http.get('http://localhost:2004/messages/' + message.recipientId + '/' + message.senderId)
                 .then(function(response) {
-                    response.data.forEach(function(message) { service.allMessages[message.senderId].push(message); });
+                    service.allMessages[message.senderId] = response.data;
                     service.allMessages[message.senderId].push(message);
                 });
             }

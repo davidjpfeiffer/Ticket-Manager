@@ -7825,7 +7825,6 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
             return result;
         };
-
     })
 
     .filter('searchCategories', function() {
@@ -7849,7 +7848,6 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
             return result;
         };
-
     })
 
     .filter('searchUsers', function() {
@@ -7878,8 +7876,39 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
             return result;
         };
+    })
 
-    });
+    //.filter('searchMessages', function() {
+
+    //    return function(list, query) {
+
+    //        if (!query) {
+    //            return list;
+    //        }
+
+    //        var result = [];
+
+    //        query = query.toLowerCase();
+
+    //        angular.forEach(list, function(item) {
+
+    //            if (item.title.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //            else if (item.content.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //            else if (item.priority.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //            else if (item.category.toLowerCase().indexOf(query) !== -1) {
+    //                result.push(item);
+    //            }
+    //        });
+
+    //        return result;
+    //    };
+    //});
 
 }());
 (function() {
@@ -7981,7 +8010,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         angular.extend(toastrConfig, {
             allowHtml: true,
             autoDismiss: false,
-            closeButton: true,
+            closeButton: false,
             closeHtml: '<button>&times;</button>',
             containerId: 'toast-container',
             extendedTimeOut: 1000,
@@ -8033,15 +8062,92 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
     angular
         .module('app')
+        .directive('categoryListItem', categoryListItem);
+
+    function categoryListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/categories/directives/category-list-item.directive.html',
+            scope: {
+                category: '='
+            }
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('ticketListItem', ticketListItem);
+
+    function ticketListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/tickets/directives/ticket-list-item.directive.html',
+            scope: {
+                ticket: '='
+            }
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('messageListItem', messageListItem);
+
+    function messageListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/messages/directives/message-list-item.directive.html',
+            scope: {
+                user: '='
+            }
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('userListItem', userListItem);
+
+    function userListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/users/directives/user-list-item.directive.html',
+            scope: {
+                user: '='
+            }
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .controller('mainController', mainController);
 
-    mainController.$inject = ['authenticationService', 'messageService', 'toastr'];
+    mainController.$inject = ['$rootScope', 'authenticationService', 'messageService', 'toastr'];
 
-    function mainController(authenticationService, messageService, toastr) {
+    function mainController($rootScope, authenticationService, messageService, toastr) {
         var main = this;
+        // Account
         main.account = {};
         main.logout = authenticationService.logout;
         main.mySocket = {};
+
+        // Navigation
+        main.toggleNav = toggleNav;
+        main.displayNav = false;
 
         activate();
 
@@ -8051,9 +8157,17 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
             main.mySocket = messageService.socket;
             main.mySocket.on('private message', function(message) {
                 messageService.addNewMessage(message);
-                toastr.success('From ' + message.sender, 'New Message');
+                toastr.info('From ' + message.sender, 'New Message');
+            });
+
+            $rootScope.$on("$locationChangeStart", function() {
+                main.displayNav = false;
             });
         };
+
+        function toggleNav() {
+            main.displayNav = !main.displayNav;
+        }
     }
 }());
 (function() {
@@ -8312,9 +8426,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         vm.businessId;
         vm.createNewCategory = createNewCategory;
 
-        function createNewCategory(name) {
+        function createNewCategory() {
             var account = authenticationService.getAuthenticatedAccount();
-                categoryService.createCategory({ 'name': name, 'businessId': account.businessId })
+                categoryService.createCategory({ 'name': vm.name, 'businessId': account.businessId })
                 .then(function() { $window.location.href = '/app/categories'; });
         }
     }
@@ -8341,9 +8455,17 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
         function sendMessage() {
             var message = { recipientId: vm.recipient.id, senderId: vm.account.id, sender: vm.account.userName, content: vm.message };
-            vm.messages.push(message)
+            vm.messages.push(message);
             messageService.sendMessage(message);
             vm.message = '';
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            setTimeout(function() {
+                var textarea = document.getElementById('messageBox');
+                textarea.scrollTop = textarea.scrollHeight;
+            }, 0);
         }
 
         function activate() {
@@ -8368,13 +8490,13 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
             // Get Messages In This Conversation
             messageService.getConversation(vm.account.id, $routeParams.recipientId)
             .then(function(messages) {
-                console.log(messages);
-                messages.forEach(function(message) { vm.messages.push(message); });
+                vm.messages = messages;
+                scrollToBottom();
             });
 
             vm.socket.on('private message', function(message) {
                 vm.messages.push(message);
-                $scope.$apply();
+                scrollToBottom();
             });
         }
     }
@@ -8416,10 +8538,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
                 return deferred.promise;
             }
             else {
-                service.allMessages[recipientId] = [];
                 return $http.get('http://localhost:2004/messages/' + senderId + '/' + recipientId)
                 .then(function(response) {
-                    response.data.forEach(function(message) { service.allMessages[recipientId].push(message); });
+                    service.allMessages[recipientId] = response.data;
                     return response.data;
                 });
             }
@@ -8430,10 +8551,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
                 service.allMessages[message.senderId].push(message);
             }
             else {
-                service.allMessages[message.senderId] = [];
                 $http.get('http://localhost:2004/messages/' + message.recipientId + '/' + message.senderId)
                 .then(function(response) {
-                    response.data.forEach(function(message) { service.allMessages[message.senderId].push(message); });
+                    service.allMessages[message.senderId] = response.data;
                     service.allMessages[message.senderId].push(message);
                 });
             }
@@ -8508,9 +8628,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
         activate();
 
-        function createNewTicket(title, priority, categoryId, content) {
+        function createNewTicket() {
             var account = authenticationService.getAuthenticatedAccount();
-            return ticketService.createTicket({ 'title': title, 'priority': priority, 'categoryId': categoryId, 'content': content, 'creatorId': account.id })
+            return ticketService.createTicket({ 'title': vm.title, 'priority': vm.priority, 'categoryId': vm.category.id, 'content': vm.content, 'creatorId': account.id })
             .then(function() { $window.location.href = '/app/tickets'; });
         }
 
@@ -8656,22 +8776,41 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
     function ticketsController(ticketService, categoryService) {
         var vm = this;
         vm.tickets = [];
-        vm.availableSortingOptions = [];
-        vm.primarySortingOption = 'Sorting Options';
-        vm.secondarySortingOption = 'Value Options';
+        vm.categories = [];
+
+        // Sorting Variables
+        vm.options = {};
+        vm.options.categories = {};
+        vm.options.status = {};
+        vm.options.sort = {};
+        vm.values = {};
+        vm.values.categories = {};
+        vm.values.status = {};
+        vm.values.sort = {};
 
         activate();
 
         function activate() {
             ticketService.getTickets()
-                .then(function(response) {
-                    vm.tickets = response;
-                });
+            .then(function(response) {
+                vm.tickets = response;
+            });
 
             categoryService.getCategories()
-                .then(function(response) {
-                    vm.availableSortingOptions = [{ name: 'Sorting Options', values: ['Value Options'] }, { name: 'Category', values: response.map(function(i) { return i.name }) }, { name: 'Priority', values: ['High', 'Medium', 'Low', 'Low to High', 'High to Low'] }, { name: 'Status', values: ['Open', 'Closed', 'Open to Closed', 'Closed to Open'] }];
-                });
+            .then(function(response) {
+                vm.categories = response;
+
+                vm.options.categories = [];
+                vm.options.categories.push({ name: 'All Categories', value: -1 });
+                vm.categories.forEach(function(category) { vm.options.categories.push({ name: category.name, value: category.id }) });
+                vm.values.categories = vm.options.categories[0];
+            });
+
+            vm.options.status = [{ name: 'All Tickets', value: 'all' }, { name: 'Open Tickets Only', value: 'open' }, { name: 'Closed Tickets Only', value: 'closed' }];
+            vm.options.sort = [{ name: 'Newest First' }, { name: 'Oldest First' }, { name: 'Most Important First' }, { name: 'Least Important First' }];
+
+            vm.values.status = vm.options.status[0];
+            vm.values.sort = vm.options.sort[0];
         }
     }
 }());
@@ -8728,9 +8867,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
         activate();
 
-        function createNewUser(firstName, lastName, email, password) {
+        function createNewUser() {
             var account = authenticationService.getAuthenticatedAccount();
-            return userService.createUser({ 'firstName': firstName, 'lastName': lastName, 'email': email, 'password': password, 'businessId': account.businessId })
+            return userService.createUser({ 'firstName': vm.user.firstName, 'lastName': vm.user.lastName, 'email': vm.user.email, 'password': vm.user.password, 'businessId': account.businessId })
             .then(function() { $window.location.href = '/app/users'; });
         }
 
@@ -8832,78 +8971,6 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
                 .then(function(response) {
                     vm.users = response;
                 });
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('categoryListItem', categoryListItem);
-
-    function categoryListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/categories/directives/category-list-item.directive.html',
-            scope: {
-                category: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('messageListItem', messageListItem);
-
-    function messageListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/messages/directives/message-list-item.directive.html',
-            scope: {
-                user: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('ticketListItem', ticketListItem);
-
-    function ticketListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/tickets/directives/ticket-list-item.directive.html',
-            scope: {
-                ticket: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('userListItem', userListItem);
-
-    function userListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/users/directives/user-list-item.directive.html',
-            scope: {
-                user: '='
-            }
         }
     }
 }());

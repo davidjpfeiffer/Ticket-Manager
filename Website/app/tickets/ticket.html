@@ -1,7 +1,9 @@
 ﻿<div class="title-bar">
     <h2>Ticket Details</h2>
-    <a ng-show="vm.ticket.status === 'Open'" ng-click="vm.closeTicket()" class="main-button red">Close Ticket</a>
-    <a ng-show="vm.ticket.status === 'Open'" ng-href="/app/tickets/{{ vm.ticket.id }}/edit" class="main-button">Edit Ticket</a>
+    <span>
+        <a ng-show="vm.ticket.status === 'Open'" ng-href="/app/tickets/{{ vm.ticket.id }}/edit" class="main-button">Edit Ticket</a>
+        <a ng-show="vm.ticket.status === 'Open'" ng-click="vm.closeTicket()" class="main-button red">Close Ticket</a>
+    </span>
 </div>
 <div class="main-content">
     <div class="content">
@@ -29,11 +31,9 @@
         </div>
     </div>
     <div class="content" ng-show="vm.ticket.status === 'Open'">
-        <h3>Update Ticket</h3>
         <form class="main-form" ng-submit="vm.updateTicket(update)">
             <div class="controls">
-                <textarea ng-model="update" required></textarea>
-                <button class="single" type="submit">Update</button>
+                <input placeholder="Update Ticket..." ng-model="update" required />
             </div>
         </form>
     </div>

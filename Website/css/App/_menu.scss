@@ -1,7 +1,6 @@
 ﻿/*****************************************
     App Menu
 *****************************************/
-
 .app-menu {
     background: #222;
     overflow-y: scroll;
@@ -35,8 +34,52 @@
                     background: #333;
                     color: #fff;
                 }
+
+                &:focus {
+                    outline: none;
+                    background: #333;
+                }
             }
         }
+    }
+}
+
+/*****************************************
+    Mobile Only Breakpoint For Transitions
+*****************************************/
+@media screen and (max-width: 960px) {
+    .app-menu {
+
+        ul {
+            clear: both;
+            overflow-y: hidden;
+            max-height: 0;
+            -moz-transition-property: all;
+            -o-transition-property: all;
+            -webkit-transition-property: all;
+            transition-property: all;
+            -moz-transition-duration: .5s;
+            -o-transition-duration: .5s;
+            -webkit-transition-duration: .5s;
+            transition-duration: .5s;
+            -moz-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+            -o-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+            -webkit-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+            transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+        }
+
+        button {
+            float: right;
+            padding: 10px;
+
+            img {
+                margin: 0;
+            }
+        }
+    }
+
+    .app-menu ul.open {
+        max-height: 500px;
     }
 }
 
@@ -64,7 +107,12 @@
         height: 100%;
         text-align: left;
 
+        button {
+            display: none;
+        }
+
         ul {
+            display: block;
 
             li {
 

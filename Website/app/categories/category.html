@@ -1,7 +1,9 @@
 ﻿<div class="title-bar">
     <h2>Category Details</h2>
-    <a ng-click="vm.deleteCategory()" class="main-button red">Delete Category</a>
-    <a ng-href="/app/categories/{{ vm.category.id }}/edit" class="main-button">Edit Category</a>
+    <span>
+        <a ng-href="/app/categories/{{ vm.category.id }}/edit" class="main-button">Edit Category</a>
+        <a href="/app/categories" ng-click="vm.deleteCategory()" class="main-button red">Delete Category</a>
+    </span>
 </div>
 <div class="main-content">
     <div class="content">

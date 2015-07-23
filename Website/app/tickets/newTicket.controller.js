@@ -14,9 +14,9 @@
 
         activate();
 
-        function createNewTicket(title, priority, categoryId, content) {
+        function createNewTicket() {
             var account = authenticationService.getAuthenticatedAccount();
-            return ticketService.createTicket({ 'title': title, 'priority': priority, 'categoryId': categoryId, 'content': content, 'creatorId': account.id })
+            return ticketService.createTicket({ 'title': vm.title, 'priority': vm.priority, 'categoryId': vm.category.id, 'content': vm.content, 'creatorId': account.id })
             .then(function() { $window.location.href = '/app/tickets'; });
         }
 

@@ -1,20 +1,19 @@
-﻿<div class="app-form-wrapper">
+﻿<div class="title-bar">
     <h2>New Ticket</h2>
-    <form ng-submit="vm.createNewTicket(title, priority, categoryId, content)">
-        <label>Title</label><br />
-        <input type="text" ng-model="title" required /><br />
-        <label>Priority</label><br />
-        <select ng-model="priority" required>
-            <option>Low</option>
-            <option selected>Medium</option>
-            <option>High</option>
-        </select><br />
-        <label>Category</label><br />
-        <select ng-model="categoryId" required>
-            <option ng-repeat="category in vm.categories" value="{{ category.id }}">{{ category.name }}</option>
-        </select><br />
-        <label>Description of the Issue</label><br />
-        <textarea ng-model="content" required></textarea><br />
-        <button type="submit">Create</button>
+    <span>
+        <a ng-click="vm.createNewTicket()" class="main-button green">Create Ticket</a>
+    </span>
+</div>
+<div class="main-content">
+    <form class="content">
+        <input placeholder="Ticket Title..." type="text" ng-model="vm.title" required />
+        <hr />
+        <div class="meta-data">
+            <p>Category: <select ng-model="vm.category" ng-options="category as category.name for category in vm.categories" required></select></p>
+            <p>Priority: <select ng-model="vm.priority" required><option>Low</option><option selected>Medium</option><option>High</option></select></p>
+        </div>
+        <div class="object-content">
+            <p><textarea placeholder="Ticket Details..." ng-model="vm.content" required></textarea></p>
+        </div>
     </form>
 </div>

@@ -11,7 +11,7 @@ io.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         if (socket.userId in userBase) {
-            console.log(socket.userName + ' has disconnected from the chat.');
+            console.log(socket.userName + ' logged out.');
             delete userBase[socket.userId];
             socket.emit('update online users', userBase);
         }
@@ -23,9 +23,8 @@ io.on('connection', function(socket) {
             io.sockets.connected[user.socketId].emit('private message', message);
         }
         else {
-            console.log('Message Sent Offline');
+            // Send offline message to database
         }
-        console.log('User ' + message.senderId + ' to User ' + message.recipientId + ': ' + message.content);
     });
 
     socket.on('add user to chat', function(account) {
@@ -36,7 +35,7 @@ io.on('connection', function(socket) {
         userBase[account.id] = { socketId: socket.id, userName: account.firstName + ' ' + account.lastName };
         socket.userName = account.userName;
         socket.userId = account.id;
-        console.log(socket.userName + ' has connected to the chat.');
+        console.log(socket.userName + ' logged in.');
         socket.emit('update online users', userBase);
     });
 });

@@ -13,9 +13,9 @@
 
         activate();
 
-        function createNewUser(firstName, lastName, email, password) {
+        function createNewUser() {
             var account = authenticationService.getAuthenticatedAccount();
-            return userService.createUser({ 'firstName': firstName, 'lastName': lastName, 'email': email, 'password': password, 'businessId': account.businessId })
+            return userService.createUser({ 'firstName': vm.user.firstName, 'lastName': vm.user.lastName, 'email': vm.user.email, 'password': vm.user.password, 'businessId': account.businessId })
             .then(function() { $window.location.href = '/app/users'; });
         }
 
