@@ -21,7 +21,7 @@ namespace Domain
         public int Id { get; private set; }
         public string Content { get; private set; }
         public int CreatorId { get; private set; }
-        public virtual User Creator { get; protected set; }
+        public virtual Account Creator { get; protected set; }
         public int TicketId { get; private set; }
         public virtual Ticket Ticket { get; protected set; }
         public DateTime DateCreated { get; private set; }

@@ -58,29 +58,29 @@
             controller: 'editCategoryController',
             controllerAs: 'vm'
         })
-        .when('/app/users', {
-            templateUrl: '/app/users/users.html',
-            controller: 'usersController',
+        .when('/app/accounts', {
+            templateUrl: '/app/accounts/accounts.html',
+            controller: 'accountsController',
             controllerAs: 'vm'
         })
-        .when('/app/users/new', {
-            templateUrl: '/app/users/newUser.html',
-            controller: 'newUserController',
+        .when('/app/accounts/new', {
+            templateUrl: '/app/accounts/newAccount.html',
+            controller: 'newAccountController',
             controllerAs: 'vm'
         })
-        .when('/app/users/:userId', {
-            templateUrl: '/app/users/user.html',
-            controller: 'userController',
+        .when('/app/accounts/:accountId', {
+            templateUrl: '/app/accounts/account.html',
+            controller: 'accountController',
             controllerAs: 'vm'
         })
-        .when('/app/users/:userId/edit', {
-            templateUrl: '/app/users/editUser.html',
-            controller: 'editUserController',
+        .when('/app/accounts/:accountId/edit', {
+            templateUrl: '/app/accounts/editAccount.html',
+            controller: 'editAccountController',
             controllerAs: 'vm'
         })
         .when('/app/messages', {
             templateUrl: '/app/messages/messages.html',
-            controller: 'usersController',
+            controller: 'accountsController',
             controllerAs: 'vm'
         })
         .when('/app/messages/:recipientId', {

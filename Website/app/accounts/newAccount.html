@@ -1,0 +1,17 @@
+﻿<div class="title-bar">
+    <h2>New Account</h2>
+    <span>
+        <a ng-click="vm.createNewAccount()" class="main-button green">Create Account</a>
+    </span>
+</div>
+<div class="main-content">
+    <form class="content">
+        <input placeholder="First Name..." type="text" ng-model="vm.account.firstName" required />
+        <input placeholder="Last Name..." type="text" ng-model="vm.account.lastName" required />
+        <hr />
+        <div class="meta-data">
+            <input placeholder="Email Address..." type="text" ng-model="vm.account.email" />
+            <input placeholder="Password..." type="text" ng-model="vm.account.password" />
+        </div>
+    </form>
+</div>

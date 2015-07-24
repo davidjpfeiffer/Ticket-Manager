@@ -5,9 +5,9 @@
         .module('app')
         .controller('messageController', messageController);
 
-    messageController.$inject = ['$scope', '$routeParams', 'authenticationService', 'messageService', 'userService'];
+    messageController.$inject = ['$scope', '$routeParams', 'authenticationService', 'messageService', 'accountService'];
 
-    function messageController($scope, $routeParams, authenticationService, messageService, userService) {
+    function messageController($scope, $routeParams, authenticationService, messageService, accountService) {
         var vm = this;
         vm.socket = {};
         vm.account = {};
@@ -44,9 +44,9 @@
             delete vm.account.lastName;
 
             // Get Recipients Account
-            userService.getUser($routeParams.recipientId)
-            .then(function(user) {
-                vm.recipient = user;
+            accountService.getAccount($routeParams.recipientId)
+            .then(function(account) {
+                vm.recipient = account;
                 vm.recipient.userName = vm.recipient.firstName + ' ' + vm.recipient.lastName;
                 delete vm.recipient.firstName;
                 delete vm.recipient.lastName;

@@ -1,0 +1,18 @@
+﻿<div class="title-bar">
+    <h2>Account Details</h2>
+    <span>
+        <a ng-href="/app/accounts/{{ vm.account.id }}/edit" ng-show="main.account.admin" class="main-button">Edit Account</a>
+        <a href="/app/accounts" ng-click="vm.deleteAccount()" ng-show="main.account.admin" class="main-button red">Delete Account</a>
+    </span>
+</div>
+<div class="main-content">
+    <form class="content">
+        <h3>{{ vm.account.firstName + ' ' + vm.account.lastName }}</h3>
+        <hr />
+        <div class="meta-data">
+            <p ng-show="vm.account.admin">Account Type: <span class="red">Admin</span></p>
+            <p ng-hide="vm.account.admin">Account Type: <span class="default">Normal</span></p>
+            <p>Contributed Ticket Updates: <span class="default">{{ vm.account.ticketUpdates }}</span></p>
+        </div>
+    </form>
+</div>

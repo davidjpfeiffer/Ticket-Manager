@@ -59,7 +59,7 @@
         };
     })
 
-    .filter('searchUsers', function() {
+    .filter('searchAccounts', function() {
 
         return function(list, query) {
 

@@ -17,7 +17,6 @@ namespace Service.Converters
                 Id = domain.Id,
                 Name = domain.Name,
                 ActiveAccount = domain.ActiveAccount,
-                AccountType = "business"
             };
         }
     }

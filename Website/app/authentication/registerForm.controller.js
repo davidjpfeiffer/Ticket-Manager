@@ -15,9 +15,9 @@
         function submit() {
             authenticationService.login($scope.email, $scope.password).then(onSuccess, onFail);
 
-            function onSuccess(user) {
-                if (user == null) {
-                    console.error('User was not authenticated.');
+            function onSuccess(account) {
+                if (account == null) {
+                    console.error('Account was not authenticated.');
                 }
                 else {
                     $location.path('/app/dashboard');

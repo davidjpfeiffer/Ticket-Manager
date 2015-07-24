@@ -7850,7 +7850,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         };
     })
 
-    .filter('searchUsers', function() {
+    .filter('searchAccounts', function() {
 
         return function(list, query) {
 
@@ -7971,29 +7971,29 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
             controller: 'editCategoryController',
             controllerAs: 'vm'
         })
-        .when('/app/users', {
-            templateUrl: '/app/users/users.html',
-            controller: 'usersController',
+        .when('/app/accounts', {
+            templateUrl: '/app/accounts/accounts.html',
+            controller: 'accountsController',
             controllerAs: 'vm'
         })
-        .when('/app/users/new', {
-            templateUrl: '/app/users/newUser.html',
-            controller: 'newUserController',
+        .when('/app/accounts/new', {
+            templateUrl: '/app/accounts/newAccount.html',
+            controller: 'newAccountController',
             controllerAs: 'vm'
         })
-        .when('/app/users/:userId', {
-            templateUrl: '/app/users/user.html',
-            controller: 'userController',
+        .when('/app/accounts/:accountId', {
+            templateUrl: '/app/accounts/account.html',
+            controller: 'accountController',
             controllerAs: 'vm'
         })
-        .when('/app/users/:userId/edit', {
-            templateUrl: '/app/users/editUser.html',
-            controller: 'editUserController',
+        .when('/app/accounts/:accountId/edit', {
+            templateUrl: '/app/accounts/editAccount.html',
+            controller: 'editAccountController',
             controllerAs: 'vm'
         })
         .when('/app/messages', {
             templateUrl: '/app/messages/messages.html',
-            controller: 'usersController',
+            controller: 'accountsController',
             controllerAs: 'vm'
         })
         .when('/app/messages/:recipientId', {
@@ -8062,78 +8062,6 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
     angular
         .module('app')
-        .directive('categoryListItem', categoryListItem);
-
-    function categoryListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/categories/directives/category-list-item.directive.html',
-            scope: {
-                category: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('ticketListItem', ticketListItem);
-
-    function ticketListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/tickets/directives/ticket-list-item.directive.html',
-            scope: {
-                ticket: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('messageListItem', messageListItem);
-
-    function messageListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/messages/directives/message-list-item.directive.html',
-            scope: {
-                user: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('userListItem', userListItem);
-
-    function userListItem() {
-        return {
-            restrict: 'E',
-            replace: 'true',
-            templateUrl: '/app/users/directives/user-list-item.directive.html',
-            scope: {
-                user: '='
-            }
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
         .controller('mainController', mainController);
 
     mainController.$inject = ['$rootScope', 'authenticationService', 'messageService', 'toastr'];
@@ -8175,11 +8103,164 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
     angular
         .module('app')
+        .controller('accountController', accountController);
+
+    accountController.$inject = ['$routeParams', '$window', 'accountService', 'authenticationService'];
+
+    function accountController($routeParams, $window, accountService, authenticationService) {
+        var vm = this;
+        vm.account = {};
+        vm.deleteAccount = deleteAccount;
+
+        activate();
+
+        function deleteAccount() {
+            accountService.deleteAccount($routeParams.accountId)
+            .then(function() { $window.location.href = '/app/accounts'; });
+        }
+
+        function activate() {
+            accountService.getAccount($routeParams.accountId)
+                .then(function(response) {
+                    vm.account = response;
+                });
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .factory('accountService', accountService);
+
+    accountService.$inject = ['$http'];
+
+    function accountService($http) {
+        var service = {
+            getAccounts: getAccounts,
+            getAccount: getAccount,
+            editAccountInfo: editAccountInfo,
+            createAccount: createAccount,
+            deleteAccount: deleteAccount
+        };
+        return service;
+
+        function getAccounts() {
+            return $http.get('http://localhost:2001/accounts')
+            .then(function(response) { return response.data; });
+        }
+
+        function getAccount(accountId) {
+            return $http.get('http://localhost:2001/accounts/' + accountId)
+            .then(function(response) { return response.data; });
+        }
+
+        function editAccountInfo(accountId, account) {
+            return $http.put('http://localhost:2001/accounts/' + accountId, account)
+            .then(function(response) { return response.data; });
+        }
+
+        function createAccount(account) {
+            return $http.post('http://localhost:2001/accounts', account)
+            .then(function(response) { return response.data; });
+        }
+
+        function deleteAccount(accountId) {
+            return $http.delete('http://localhost:2001/accounts/' + accountId)
+            .then(function(response) { return response.data; });
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('accountsController', accountsController);
+
+    accountsController.$inject = ['accountService'];
+
+    function accountsController(accountService) {
+        var vm = this;
+        vm.accounts = {};
+
+        activate();
+
+        function activate() {
+            accountService.getAccounts()
+                .then(function(response) {
+                    vm.accounts = response;
+                });
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('editAccountController', editAccountController);
+
+    editAccountController.$inject = ['$routeParams', '$window', 'authenticationService', 'accountService'];
+
+    function editAccountController($routeParams, $window, authenticationService, accountService) {
+        var vm = this;
+        vm.editAccount = editAccount;
+        vm.account = {};
+        vm.accountBeingEdited = {};
+
+        activate();
+
+        function editAccount() {
+            return accountService.editAccountInfo($routeParams.accountId, { 'firstName': vm.accountBeingEdited.firstName, 'lastName': vm.accountBeingEdited.lastName, 'ticketUpdates': vm.accountBeingEdited.ticketUpdates, 'email': vm.accountBeingEdited.email, 'password': vm.accountBeingEdited.password, 'admin': vm.accountBeingEdited.admin })
+            .then(function() { $window.location.href = '/app/accounts/' + vm.accountBeingEdited.id; });
+        }
+
+        function activate() {
+            vm.account = authenticationService.getAuthenticatedAccount()
+            accountService.getAccount($routeParams.accountId)
+                .then(function(account) {
+                    vm.accountBeingEdited = account;
+                });
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('newAccountController', newAccountController);
+
+    newAccountController.$inject = ['$window', 'accountService', 'authenticationService'];
+
+    function newAccountController($window, accountService, authenticationService) {
+        var vm = this;
+        vm.createNewUser = createNewUser;
+
+        activate();
+
+        function createNewUser() {
+            var account = authenticationService.getAuthenticatedAccount();
+            return accountService.createAccount({ 'firstName': vm.account.firstName, 'lastName': vm.account.lastName, 'email': vm.account.email, 'password': vm.account.password, 'businessId': account.businessId })
+            .then(function() { $window.location.href = '/app/accounts'; });
+        }
+
+        function activate() {
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .factory('authenticationService', authenticationService);
 
-    authenticationService.$inject = ['$http', 'userService'];
+    authenticationService.$inject = ['$http'];
 
-    function authenticationService($http, userService) {
+    function authenticationService($http) {
 
         var service = {
             login: login,
@@ -8189,17 +8270,17 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         return service;
 
         function login(email, password) {
-            return $http.get('http://localhost:2001/login?email=' + email + '&password=' + password)
+            return $http.get('http://localhost:2001/accounts?email=' + email + '&password=' + password)
             .then(onSuccess, onFail);
 
             function onSuccess(response) {
-                var user = response.data;
-                sessionStorage.setItem('account', angular.toJson(user));
-                return user;
+                var account = response.data;
+                sessionStorage.setItem('account', angular.toJson(account));
+                return account;
             }
 
             function onFail(response) {
-                logout();
+                sessionStorage.setItem('account', null);
                 return null;
             }
         }
@@ -8221,9 +8302,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         .module('app')
         .controller('loginFormController', loginFormController);
 
-    loginFormController.$inject = ['$window', 'authenticationService'];
+    loginFormController.$inject = ['$window', 'authenticationService', 'toastr'];
 
-    function loginFormController($window, authenticationService) {
+    function loginFormController($window, authenticationService, toastr) {
         var vm = this;
         vm.email;
         vm.password;
@@ -8234,7 +8315,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
             function onSuccess(account) {
                 if (account === null) {
-                    console.error('User was not authenticated.');
+                    toastr.error('Please try again.', 'Login Unsuccessful');
                 }
                 else {
                     $window.location.href = '/app/dashboard';
@@ -8242,7 +8323,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
             }
 
             function onFail() {
-                console.error('Server error.');
+                toastr.error('Server Error');
             }
         }
     }
@@ -8264,9 +8345,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         function submit() {
             authenticationService.login($scope.email, $scope.password).then(onSuccess, onFail);
 
-            function onSuccess(user) {
-                if (user == null) {
-                    console.error('User was not authenticated.');
+            function onSuccess(account) {
+                if (account == null) {
+                    console.error('Account was not authenticated.');
                 }
                 else {
                     $location.path('/app/dashboard');
@@ -8440,9 +8521,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         .module('app')
         .controller('messageController', messageController);
 
-    messageController.$inject = ['$scope', '$routeParams', 'authenticationService', 'messageService', 'userService'];
+    messageController.$inject = ['$scope', '$routeParams', 'authenticationService', 'messageService', 'accountService'];
 
-    function messageController($scope, $routeParams, authenticationService, messageService, userService) {
+    function messageController($scope, $routeParams, authenticationService, messageService, accountService) {
         var vm = this;
         vm.socket = {};
         vm.account = {};
@@ -8479,9 +8560,9 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
             delete vm.account.lastName;
 
             // Get Recipients Account
-            userService.getUser($routeParams.recipientId)
-            .then(function(user) {
-                vm.recipient = user;
+            accountService.getAccount($routeParams.recipientId)
+            .then(function(account) {
+                vm.recipient = account;
                 vm.recipient.userName = vm.recipient.firstName + ' ' + vm.recipient.lastName;
                 delete vm.recipient.firstName;
                 delete vm.recipient.lastName;
@@ -8522,12 +8603,10 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         return service;
 
         function connectToChat(account) {
-            if (account.accountType === 'user') {
-                if (service.socket === null) {
-                    service.socket = io.connect('http://localhost:3000');
-                    service.socket.emit('add user to chat', account);
-                    service.allMessages = {};
-                }
+            if (service.socket === null) {
+                service.socket = io.connect('http://localhost:3000');
+                service.socket.emit('add account to chat', account);
+                service.allMessages = {};
             }
         }
 
@@ -8819,36 +8898,34 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
     angular
         .module('app')
-        .controller('editUserController', editUserController);
+        .directive('accountListItem', accountListItem);
 
-    editUserController.$inject = ['$routeParams', '$window', 'userService'];
-
-    function editUserController($routeParams, $window, userService) {
-        var vm = this;
-        vm.editUser = editUser;
-        vm.user = {};
-        vm.newEmail = '';
-        vm.newPassword = '';
-
-        activate();
-
-        function editUser() {
-            if (vm.newEmail !== '') {
-                vm.user.email = vm.newEmail;
+    function accountListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/accounts/directives/account-list-item.directive.html',
+            scope: {
+                account: '='
             }
-            if (vm.newPassword !== '') {
-                vm.user.password = vm.newPassword;
+        }
+    }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('categoryListItem', categoryListItem);
+
+    function categoryListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/categories/directives/category-list-item.directive.html',
+            scope: {
+                category: '='
             }
-            console.log('test');
-            return userService.editUserInfo($routeParams.userId, { 'firstName': vm.user.firstName, 'lastName': vm.user.lastName, 'ticketUpdates' : vm.user.ticketUpdates, 'email': vm.user.email, 'password': vm.user.password })
-            .then(function() { $window.location.href = '/app/users/' + vm.user.id; });
-        }
-
-        function activate() {
-            userService.getUser($routeParams.userId)
-                .then(function(response) {
-                    vm.user = response;
-                });
         }
     }
 }());
@@ -8857,23 +8934,16 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
     angular
         .module('app')
-        .controller('newUserController', newUserController);
+        .directive('messageListItem', messageListItem);
 
-    newUserController.$inject = ['$window', 'userService', 'authenticationService'];
-
-    function newUserController($window, userService, authenticationService) {
-        var vm = this;
-        vm.createNewUser = createNewUser;
-
-        activate();
-
-        function createNewUser() {
-            var account = authenticationService.getAuthenticatedAccount();
-            return userService.createUser({ 'firstName': vm.user.firstName, 'lastName': vm.user.lastName, 'email': vm.user.email, 'password': vm.user.password, 'businessId': account.businessId })
-            .then(function() { $window.location.href = '/app/users'; });
-        }
-
-        function activate() {
+    function messageListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/messages/directives/message-list-item.directive.html',
+            scope: {
+                account: '='
+            }
         }
     }
 }());
@@ -8882,95 +8952,16 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
     angular
         .module('app')
-        .controller('userController', userController);
+        .directive('ticketListItem', ticketListItem);
 
-    userController.$inject = ['$routeParams', '$window', 'userService', 'authenticationService'];
-
-    function userController($routeParams, $window, userService, authenticationService) {
-        var vm = this;
-        vm.user = {};
-        vm.deleteUser = deleteUser;
-
-        activate();
-
-        function deleteUser() {
-            userService.deleteUser($routeParams.userId)
-            .then(function() { $window.location.href = '/app/users'; });
-        }
-
-        function activate() {
-            userService.getUser($routeParams.userId)
-                .then(function(response) {
-                    vm.user = response;
-                });
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .factory('userService', userService);
-
-    userService.$inject = ['$http'];
-
-    function userService($http) {
-        var service = {
-            getUsers: getUsers,
-            getUser: getUser,
-            editUserInfo: editUserInfo,
-            createUser: createUser,
-            deleteUser: deleteUser
-        };
-        return service;
-
-        function getUsers() {
-            return $http.get('http://localhost:2001/users')
-            .then(function(response) { return response.data; });
-        }
-
-        function getUser(userId) {
-            return $http.get('http://localhost:2001/users/' + userId)
-            .then(function(response) { return response.data; });
-        }
-
-        function editUserInfo(userId, user) {
-            return $http.put('http://localhost:2001/users/' + userId, user)
-            .then(function(response) { return response.data; });
-        }
-
-        function createUser(user) {
-            return $http.post('http://localhost:2001/users', user)
-            .then(function(response) { return response.data; });
-        }
-
-        function deleteUser(userId) {
-            return $http.delete('http://localhost:2001/users/' + userId)
-            .then(function(response) { return response.data; });
-        }
-    }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('usersController', usersController);
-
-    usersController.$inject = ['userService'];
-
-    function usersController(userService) {
-        var vm = this;
-        vm.users = {};
-
-        activate();
-
-        function activate() {
-            userService.getUsers()
-                .then(function(response) {
-                    vm.users = response;
-                });
+    function ticketListItem() {
+        return {
+            restrict: 'E',
+            replace: 'true',
+            templateUrl: '/app/tickets/directives/ticket-list-item.directive.html',
+            scope: {
+                ticket: '='
+            }
         }
     }
 }());

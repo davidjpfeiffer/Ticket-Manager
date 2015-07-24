@@ -42,7 +42,7 @@ namespace Domain
         public int CategoryId { get; private set; }
         public virtual TicketCategory Category { get; private set; }
         public int CreatorId { get; private set; }
-        public virtual User Creator { get; private set; }
+        public virtual Account Creator { get; private set; }
         public TicketPriority Priority { get; private set; }
         public TicketStatus Status { get; private set; }
         public DateTime DateCreated { get; private set; }

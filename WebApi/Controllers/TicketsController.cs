@@ -72,7 +72,7 @@ namespace WebApi.Controllers
             {
                 TicketCategory existingTicketCategory = this.Context.TicketCategories.ToList().FirstOrDefault(i => i.Id == ticket.CategoryId);
                 Business existingBusiness = this.Context.Businesses.ToList().FirstOrDefault(i => i.Id == existingTicketCategory.BusinessId);
-                User existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == ticket.CreatorId);
+                Account existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == ticket.CreatorId);
                 if (existingTicketCategory == null || existingBusiness == null || existingUser == null)
                 {
                     return this.BadRequest();
@@ -107,7 +107,7 @@ namespace WebApi.Controllers
         {
             Ticket existingTicket = this.Context.Tickets.ToList().FirstOrDefault(i => i.Id == ticketId);
             TicketCategory existingCategory = this.Context.TicketCategories.ToList().FirstOrDefault(i => i.Id == existingTicket.CategoryId);
-            User existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == update.CreatorId);
+            Account existingUser = this.Context.Users.ToList().FirstOrDefault(i => i.Id == update.CreatorId);
 
             if (existingTicket == null || existingCategory == null)
             {
@@ -123,7 +123,7 @@ namespace WebApi.Controllers
             }
             else
             {
-                existingUser.UpdateUser(existingUser.FirstName, existingUser.LastName, existingUser.TicketUpdates + 1, existingUser.Email, existingUser.Password);
+                existingUser.UpdateAccount(existingUser.FirstName, existingUser.LastName, existingUser.TicketUpdates + 1, existingUser.Email, existingUser.Password, existingUser.Admin);
                 TicketUpdate newTicketUpdate = existingTicket.CreateNewTicketUpdate(update.Content, update.CreatorId);
                 this.Context.TicketUpdates.Add(newTicketUpdate);
                 this.Context.SaveChanges();

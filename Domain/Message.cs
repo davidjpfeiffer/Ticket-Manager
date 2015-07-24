@@ -20,9 +20,9 @@ namespace Domain
 
         public int Id { get; private set; }
         public int SenderId { get; private set; }
-        public virtual User Sender { get; protected set; }
+        public virtual Account Sender { get; protected set; }
         public int RecipientId { get; private set; }
-        public virtual User Recipient { get; protected set; }
+        public virtual Account Recipient { get; protected set; }
         public string Content { get; private set; }
         public DateTime DateSent { get; private set; }
     }

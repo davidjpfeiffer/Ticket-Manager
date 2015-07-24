@@ -20,7 +20,7 @@ namespace Domain
         public DbSet<TicketCategory> TicketCategories { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketUpdate> TicketUpdates { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Account> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

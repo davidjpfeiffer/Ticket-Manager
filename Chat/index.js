@@ -18,16 +18,16 @@ io.on('connection', function(socket) {
     });
 
     socket.on('private message', function(message) {
-        var user = userBase[message.recipientId]
-        if (user) {
-            io.sockets.connected[user.socketId].emit('private message', message);
+        var account = userBase[message.recipientId]
+        if (account) {
+            io.sockets.connected[account.socketId].emit('private message', message);
         }
         else {
             // Send offline message to database
         }
     });
 
-    socket.on('add user to chat', function(account) {
+    socket.on('add account to chat', function(account) {
         account.userName = account.firstName + ' ' + account.lastName;
         account.socketId = socket.id;
         delete account.firstName;

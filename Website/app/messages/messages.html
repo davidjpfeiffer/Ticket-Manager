@@ -4,8 +4,8 @@
 <form class="search-bar"><input type="text" placeholder="Search Messages" ng-model="query" required /></form>
 <div class="main-content" id="page-with-search-bar">
     <ul class="main-list">
-        <li ng-repeat="user in vm.users | orderBy:'-id'">
-            <message-list-item user="user" />
+        <li ng-repeat="account in vm.accounts | orderBy:'-id'">
+            <message-list-item account="account" />
         </li>
     </ul>
 </div>

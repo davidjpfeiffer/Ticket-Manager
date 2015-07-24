@@ -8,18 +8,18 @@ using Dto = Service.Dto;
 
 namespace Service.Converters
 {
-    public static class UserConverter
+    public static class AccountConverter
     {
-        public static Dto.User ToDto(Dmn.User domain)
+        public static Dto.Account ToDto(Dmn.Account domain)
         {
-            return new Dto.User()
+            return new Dto.Account()
             {
                 Id = domain.Id,
                 FirstName = domain.FirstName,
                 LastName = domain.LastName,
+                Admin = domain.Admin,
                 BusinessId = domain.BusinessId,
-                TicketUpdates = domain.TicketUpdates,
-                AccountType = "user"
+                TicketUpdates = domain.TicketUpdates
             };
         }
     }

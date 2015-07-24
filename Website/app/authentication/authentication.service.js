@@ -5,9 +5,9 @@
         .module('app')
         .factory('authenticationService', authenticationService);
 
-    authenticationService.$inject = ['$http', 'userService'];
+    authenticationService.$inject = ['$http'];
 
-    function authenticationService($http, userService) {
+    function authenticationService($http) {
 
         var service = {
             login: login,
@@ -17,17 +17,17 @@
         return service;
 
         function login(email, password) {
-            return $http.get('http://localhost:2001/login?email=' + email + '&password=' + password)
+            return $http.get('http://localhost:2001/accounts?email=' + email + '&password=' + password)
             .then(onSuccess, onFail);
 
             function onSuccess(response) {
-                var user = response.data;
-                sessionStorage.setItem('account', angular.toJson(user));
-                return user;
+                var account = response.data;
+                sessionStorage.setItem('account', angular.toJson(account));
+                return account;
             }
 
             function onFail(response) {
-                logout();
+                sessionStorage.setItem('account', null);
                 return null;
             }
         }

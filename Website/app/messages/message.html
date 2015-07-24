@@ -7,7 +7,7 @@
             <li ng-repeat="message in vm.messages track by $index"><b>{{ message.sender + ': ' }}</b>{{ message.content }}</li>
         </ul>
         <form ng-submit="vm.sendMessage()">
-            <input ng-model="vm.message" required />
+            <input placeholder="Type your message here..."  ng-model="vm.message" required />
         </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>

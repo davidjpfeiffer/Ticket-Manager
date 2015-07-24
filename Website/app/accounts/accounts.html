@@ -1,10 +1,10 @@
 ﻿<div class="title-bar">
-    <h2>Manage Users</h2>
+    <h2>Manage Accounts</h2>
     <span>
-        <a href="/app/users/new" ng-show="main.account.accountType === 'business'" class="main-button green">New User</a>
+        <a href="/app/accounts/new" ng-show="main.account.admin" class="main-button green">New Account</a>
     </span>
 </div>
-<form class="search-bar"><input type="text" placeholder="Search Users" ng-model="query" required /></form>
+<form class="search-bar"><input type="text" placeholder="Search Accounts" ng-model="query" required /></form>
 <div class="main-content" id="page-with-search-bar">
     <div class="main-controls-wrapper">
         <div class="controls">
@@ -25,8 +25,8 @@
         </div>
     </div>
     <ul class="main-list">
-        <li ng-repeat="user in vm.users | orderBy:'-id' | searchUsers:query">
-            <user-list-item user="user" />
+        <li ng-repeat="account in vm.accounts | orderBy:'id' | searchAccounts:query">
+            <account-list-item account="account" />
         </li>
     </ul>
 </div>

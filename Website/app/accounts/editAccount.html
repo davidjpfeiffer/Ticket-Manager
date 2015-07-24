@@ -1,0 +1,21 @@
+﻿<div class="title-bar">
+    <h2>Account Details</h2>
+    <span>
+        <a ng-click="vm.editAccount()" class="main-button green">Save Changes</a>
+    </span>
+</div>
+<div class="main-content">
+    <form class="content">
+        <input type="text" ng-model="vm.accountBeingEdited.firstName" required />
+        <input type="text" ng-model="vm.accountBeingEdited.lastName" required />
+        <hr />
+        <div class="meta-data">
+            <p>Account Type: <select ng-model="vm.accountBeingEdited.admin" ng-options="type.value as type.name for type in [ { name: 'Admin', value: true }, { name: 'Standard', value: false }]" required></select></p>
+            <p>Contributed Ticket Updates: <span class="default">{{ vm.accountBeingEdited.ticketUpdates }}</span></p>
+        </div>
+        <div class="meta-data">
+            <p>Email: <input placeholder="Update Email Address (Optional)" type="text" ng-model="vm.accountBeingEdited.email" /></p>
+            <p>Password: <input placeholder="Update Password (Optional)" type="text" ng-model="vm.accountBeingEdited.password" /></p>
+        </div>
+    </form>
+</div>

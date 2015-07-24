@@ -20,23 +20,26 @@ header {
         }
     }
 
-    .header-button {
-        padding: 0 0 15px 0;
-
+    span {
         a {
+            padding: 5px;
+            margin: 15px 0 5px 0;
+            max-width: 100%;
+            width: 100%;
             font-size: 12px;
             font-weight: 600;
             display: block;
-            padding: 2.5px 20px;
             color: $primary-color;
             text-transform: uppercase;
             background-color: #fff;
             border-radius: 5px;
+
+            &:hover {
+                color: $primary-color;
+            }
         }
     }
 }
-
-
 
 /*****************************************
     EXTRA Small Breakpoint
@@ -55,10 +58,15 @@ header {
             padding: 0;
         }
 
-        .header-button {
+        span {
             float: right;
-            margin: 0 0 0 15px;
-            padding: 0;
+
+            a {
+                padding: 4px 25px;
+                display: inline-block;
+                margin: 0 0 0 15px;
+                width: auto;
+            }
         }
     }
 }

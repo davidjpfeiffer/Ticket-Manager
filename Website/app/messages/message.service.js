@@ -19,12 +19,10 @@
         return service;
 
         function connectToChat(account) {
-            if (account.accountType === 'user') {
-                if (service.socket === null) {
-                    service.socket = io.connect('http://localhost:3000');
-                    service.socket.emit('add user to chat', account);
-                    service.allMessages = {};
-                }
+            if (service.socket === null) {
+                service.socket = io.connect('http://localhost:3000');
+                service.socket.emit('add account to chat', account);
+                service.allMessages = {};
             }
         }
 

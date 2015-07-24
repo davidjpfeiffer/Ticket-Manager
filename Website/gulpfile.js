@@ -17,8 +17,8 @@ gulp.task('concatScripts', function() {
         './app/app.module.js',
         './app/app.filters.js',
         './app/app.config.js',
-        './account/authentication.service.js',
-        './account/loginForm.controller.js',
+        './authentication/authentication.service.js',
+        './authentication/loginForm.controller.js',
         './chat.service.js',
         './main.controller.js',
         './messages/**/*.js',
@@ -49,8 +49,8 @@ gulp.task('compileSass', function() {
 gulp.task('watch', function() {
     gulp.watch('./css/**/*.scss', ['compileSass']);
     gulp.watch([
-        './account/authentication.service.js',
-        './account/loginForm.controller.js',
+        './authentication/authentication.service.js',
+        './authentication/loginForm.controller.js',
         './messages.service.js',
         './main.controller.js',
         './app/**/*.js'

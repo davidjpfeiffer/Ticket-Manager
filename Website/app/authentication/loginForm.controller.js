@@ -5,9 +5,9 @@
         .module('app')
         .controller('loginFormController', loginFormController);
 
-    loginFormController.$inject = ['$window', 'authenticationService'];
+    loginFormController.$inject = ['$window', 'authenticationService', 'toastr'];
 
-    function loginFormController($window, authenticationService) {
+    function loginFormController($window, authenticationService, toastr) {
         var vm = this;
         vm.email;
         vm.password;
@@ -18,7 +18,7 @@
 
             function onSuccess(account) {
                 if (account === null) {
-                    console.error('User was not authenticated.');
+                    toastr.error('Please try again.', 'Login Unsuccessful');
                 }
                 else {
                     $window.location.href = '/app/dashboard';
@@ -26,7 +26,7 @@
             }
 
             function onFail() {
-                console.error('Server error.');
+                toastr.error('Server Error');
             }
         }
     }

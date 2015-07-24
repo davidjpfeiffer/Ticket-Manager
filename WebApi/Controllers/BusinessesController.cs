@@ -34,20 +34,6 @@ namespace WebApi.Controllers
             }
         }
 
-        [Route]
-        public IHttpActionResult Get(string email, string password)
-        {
-            Business existingBusiness = this.Context.Businesses.ToList().FirstOrDefault(i => (i.Email == email) && (i.Password == password));
-            if (existingBusiness == null)
-            {
-                return this.NotFound();
-            }
-            else
-            {
-                return this.Ok(BusinessConverter.ToDto(existingBusiness));
-            }
-        }
-
         [Route("{businessId:int}/categories")]
         public IHttpActionResult GetCategories(int businessId)
         {
@@ -86,7 +72,7 @@ namespace WebApi.Controllers
             }
             else
             {
-                Business newBusiness = new Business(business.Name, business.Email, business.Password);
+                Business newBusiness = new Business(business.Name);
                 this.Context.Businesses.Add(newBusiness);
                 this.Context.SaveChanges();
                 return this.Created(this.Request.RequestUri.AbsolutePath + "/" + newBusiness.Id, BusinessConverter.ToDto(newBusiness));
@@ -110,7 +96,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    existingBusiness.UpdateBusiness(business.Name, business.Email, business.Password);
+                    existingBusiness.UpdateBusiness(business.Name);
                     this.Context.SaveChanges();
                     return this.Ok(BusinessConverter.ToDto(existingBusiness));
                 }

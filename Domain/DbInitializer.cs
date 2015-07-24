@@ -19,7 +19,7 @@ namespace Domain
             businesses.ForEach(i => context.Businesses.Add(i));
             context.SaveChanges();
 
-            List<User> users = GetUser();
+            List<Account> users = GetUser();
             users.ForEach(i => context.Users.Add(i));
             context.SaveChanges();
 
@@ -43,20 +43,20 @@ namespace Domain
         private static List<Business> GetBusinesses()
         {
             List<Business> businesses = new List<Business>();
-            businesses.Add(new Business("Vintage Software", "contact@vintagesoftware.com", "Password123"));
+            businesses.Add(new Business("Vintage Software"));
             return businesses;
         }
-        private static List<User> GetUser()
+        private static List<Account> GetUser()
         {
-            List<User> users = new List<User>();
-            users.Add(new User("Liu", "Jian", "ljian@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("Mitchel", "Gevers", "mgevers@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("Hunter", "Latourette", "hlatourette@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("Brandon", "Goren", "bgoren@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("David", "Pfeiffer", "dpfeiffer@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("Steven", "Haar", "shaar@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("Cory", "Bateman", "cbateman@vintagesoftware.com", "Password123", 1));
-            users.Add(new User("Josiah", "Burchard", "jburchard@vintagesoftware.com", "Password123", 1));
+            List<Account> users = new List<Account>();
+            users.Add(new Account("David", "Pfeiffer", "dpfeiffer@vintagesoftware.com", "Password123", true, 1));
+            users.Add(new Account("Liu", "Jian", "ljian@vintagesoftware.com", "Password123", false, 1));
+            users.Add(new Account("Mitchel", "Gevers", "mgevers@vintagesoftware.com", "Password123", false, 1));
+            users.Add(new Account("Hunter", "Latourette", "hlatourette@vintagesoftware.com", "Password123", false, 1));
+            users.Add(new Account("Brandon", "Goren", "bgoren@vintagesoftware.com", "Password123", false, 1));
+            users.Add(new Account("Steven", "Haar", "shaar@vintagesoftware.com", "Password123", false, 1));
+            users.Add(new Account("Cory", "Bateman", "cbateman@vintagesoftware.com", "Password123", false, 1));
+            users.Add(new Account("Josiah", "Burchard", "jburchard@vintagesoftware.com", "Password123", false, 1));
             return users;
         }
         private static List<TicketCategory> GetTicketCategories()

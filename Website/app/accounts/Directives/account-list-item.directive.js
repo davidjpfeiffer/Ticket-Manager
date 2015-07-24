@@ -3,13 +3,13 @@
 
     angular
         .module('app')
-        .directive('messageListItem', messageListItem);
+        .directive('accountListItem', accountListItem);
 
-    function messageListItem() {
+    function accountListItem() {
         return {
             restrict: 'E',
             replace: 'true',
-            templateUrl: '/app/messages/directives/message-list-item.directive.html',
+            templateUrl: '/app/accounts/directives/account-list-item.directive.html',
             scope: {
                 account: '='
             }
