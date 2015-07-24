@@ -20,7 +20,6 @@
 
         function sendMessage() {
             var message = { recipientId: vm.recipient.id, senderId: vm.account.id, sender: vm.account.userName, content: vm.message };
-            vm.messages.push(message);
             messageService.sendMessage(message);
             vm.message = '';
             scrollToBottom();
@@ -60,7 +59,6 @@
             });
 
             vm.socket.on('private message', function(message) {
-                vm.messages.push(message);
                 scrollToBottom();
             });
         }

@@ -2,5 +2,5 @@
     'use strict';
 
     angular
-        .module('app', ['ngRoute', 'toastr']);
+        .module('app', ['ngRoute', 'ngAnimate', 'toastr']);
 }());

@@ -14,7 +14,7 @@
         </div>
     </div>-->
     <ul class="main-list">
-        <li ng-repeat="ticket in vm.tickets | orderBy:'-id' | searchTickets:query">
+        <li class="nga-default nga-stagger nga-fade" ng-repeat="ticket in vm.tickets | orderBy:'-id' | searchTickets:query">
             <ticket-list-item ticket="ticket" />
         </li>
     </ul>

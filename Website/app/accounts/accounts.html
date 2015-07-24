@@ -25,7 +25,7 @@
         </div>
     </div>
     <ul class="main-list">
-        <li ng-repeat="account in vm.accounts | orderBy:'id' | searchAccounts:query">
+        <li class="nga-default nga-stagger nga-fade" ng-repeat="account in vm.accounts | orderBy:'id' | searchAccounts:query">
             <account-list-item account="account" />
         </li>
     </ul>

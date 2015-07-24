@@ -122,6 +122,7 @@
     <Content Include="app\authentication\loginForm.controller.js" />
     <Content Include="img\Resources\menu-icon.png" />
     <Content Include="img\ticket_manager_logo.png" />
+    <Content Include="js\angular\angular-animate.min.js" />
     <Content Include="js\socket-io\client-socket-io.js" />
     <Content Include="app\authentication\registerForm.controller.js" />
     <Content Include="js\angular\angular-route.min.js" />
@@ -219,6 +220,7 @@
     </Content>
     <Content Include="css\Resources\_loading_graphic.scss" />
     <Content Include="css\Resources\_toastr_.scss" />
+    <Content Include="css\Resources\_ngAnimate.scss" />
     <None Include="Properties\PublishProfiles\ticketmanager %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ticketmanager.pubxml" />
     <None Include="Web.Debug.config">

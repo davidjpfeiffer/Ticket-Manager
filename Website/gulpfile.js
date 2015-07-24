@@ -12,6 +12,7 @@ gulp.task('concatScripts', function() {
     return gulp.src([
         './js/angular/angular.min.js',
         './js/angular/angular-route.min.js',
+        './js/angular/angular-animate.min.js',
         './js/toastr/angular-toastr.tpls.js',
         './js/socket-io/client-socket-io.js',
         './app/app.module.js',

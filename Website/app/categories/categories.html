@@ -25,7 +25,7 @@
         </div>
     </div>
     <ul class="main-list">
-        <li ng-repeat="category in vm.categories | orderBy:'-id' | searchCategories:query">
+        <li class="nga-default nga-stagger nga-fade" ng-repeat="category in vm.categories | orderBy:'-id' | searchCategories:query">
             <category-list-item category="category" />
         </li>
     </ul>
