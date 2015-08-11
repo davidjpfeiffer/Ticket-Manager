@@ -20,37 +20,37 @@
         return service;
 
         function getTickets() {
-            return $http.get('http://localhost:2001/tickets')
+            return $http.get('http://localhost:3001/tickets')
             .then(function(response) { return response.data; });
         }
 
         function getTicket(ticketId) {
-            return $http.get('http://localhost:2001/tickets/' + ticketId)
+            return $http.get('http://localhost:3001/tickets/' + ticketId)
             .then(function(response) { return response.data; });
         }
 
         function getTicketUpdates(ticketId) {
-            return $http.get('http://localhost:2001/tickets/' + ticketId + '/updates')
+            return $http.get('http://localhost:3001/tickets/' + ticketId + '/updates')
             .then(function(response) { return response.data; });
         }
 
         function updateTicket(ticketId, update) {
-            return $http.post('http://localhost:2001/tickets/' + ticketId + '/updates', update)
+            return $http.post('http://localhost:3001/tickets/' + ticketId + '/updates', update)
             .then(function(response) { return response.data; });
         }
 
         function editTicket(ticketId, ticket) {
-            return $http.put('http://localhost:2001/tickets/' + ticketId, ticket)
+            return $http.put('http://localhost:3001/tickets/' + ticketId, ticket)
             .then(function(response) { return response.data; });
         }
 
         function createTicket(ticket) {
-            return $http.post('http://localhost:2001/tickets', ticket)
+            return $http.post('http://localhost:3001/tickets', ticket)
             .then(function(response) { return response.data; });
         }
 
         function closeTicket(ticketId, userId) {
-            return $http.delete('http://localhost:2001/tickets/' + ticketId)
+            return $http.delete('http://localhost:3001/tickets/' + ticketId)
             .then(function(response) { return response.data; });
         }
     }

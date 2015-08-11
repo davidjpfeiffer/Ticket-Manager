@@ -88,7 +88,7 @@ namespace WebApi.Controllers
         }
 
         [Route("{ticketId:int}/updates/{ticketUpdateId:int}")]
-        public IHttpActionResult GetUpdate(int ticketId, int ticketUpdateId)
+        public IHttpActionResult GetUpdate(int ticketUpdateId)
         {
             TicketUpdate newTicketUpdate = this.Context.TicketUpdates.ToList().FirstOrDefault(i => i.Id == ticketUpdateId);
 

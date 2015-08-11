@@ -8349,27 +8349,27 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         return service;
 
         function getAccounts() {
-            return $http.get('http://localhost:2001/accounts')
+            return $http.get('http://localhost:3001/accounts')
             .then(function(response) { return response.data; });
         }
 
         function getAccount(accountId) {
-            return $http.get('http://localhost:2001/accounts/' + accountId)
+            return $http.get('http://localhost:3001/accounts/' + accountId)
             .then(function(response) { return response.data; });
         }
 
         function editAccountInfo(accountId, account) {
-            return $http.put('http://localhost:2001/accounts/' + accountId, account)
+            return $http.put('http://localhost:3001/accounts/' + accountId, account)
             .then(function(response) { return response.data; });
         }
 
         function createAccount(account) {
-            return $http.post('http://localhost:2001/accounts', account)
+            return $http.post('http://localhost:3001/accounts', account)
             .then(function(response) { return response.data; });
         }
 
         function deleteAccount(accountId) {
-            return $http.delete('http://localhost:2001/accounts/' + accountId)
+            return $http.delete('http://localhost:3001/accounts/' + accountId)
             .then(function(response) { return response.data; });
         }
     }
@@ -8472,7 +8472,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         return service;
 
         function login(email, password) {
-            return $http.get('http://localhost:2001/accounts?email=' + email + '&password=' + password)
+            return $http.get('http://localhost:3001/accounts?email=' + email + '&password=' + password)
             .then(onSuccess, onFail);
 
             function onSuccess(response) {
@@ -8640,27 +8640,27 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         return service;
 
         function getCategories() {
-            return $http.get('http://localhost:2001/categories')
+            return $http.get('http://localhost:3001/categories')
             .then(function(response) { return response.data; });
         }
 
         function getCategory(categoryId) {
-            return $http.get('http://localhost:2001/categories/' + categoryId)
+            return $http.get('http://localhost:3001/categories/' + categoryId)
             .then(function(response) { return response.data; });
         }
 
         function createCategory(category) {
-            return $http.post('http://localhost:2001/categories', category)
+            return $http.post('http://localhost:3001/categories', category)
             .then(function(response) { return response.data; });
         }
 
         function editCategory(categoryId, category) {
-            return $http.put('http://localhost:2001/categories/' + categoryId, category)
+            return $http.put('http://localhost:3001/categories/' + categoryId, category)
             .then(function(response) { return response.data; });
         }
 
         function deleteCategory(categoryId) {
-            return $http.delete('http://localhost:2001/categories/' + categoryId)
+            return $http.delete('http://localhost:3001/categories/' + categoryId)
             .then(function(response) { return response.data; });
         }
     }
@@ -8817,7 +8817,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
                 return deferred.promise;
             }
             else {
-                return $http.get('http://localhost:2004/messages/' + senderId + '/' + recipientId)
+                return $http.get('http://localhost:3002/messages/' + senderId + '/' + recipientId)
                 .then(function(response) {
                     service.allMessages[recipientId] = response.data;
                     return response.data;
@@ -8830,7 +8830,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
                 service.allMessages[message.senderId].push(message);
             }
             else {
-                $http.get('http://localhost:2004/messages/' + message.recipientId + '/' + message.senderId)
+                $http.get('http://localhost:3001/messages/' + message.recipientId + '/' + message.senderId)
                 .then(function(response) {
                     service.allMessages[message.senderId] = response.data;
                     service.allMessages[message.senderId].push(message);
@@ -8846,7 +8846,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
             // Send Message to Database
             // IDEA: We could send the message to the database from the node server in batches
-            return $http.post('http://localhost:2004/messages', message);
+            return $http.post('http://localhost:3001/messages', message);
         }
     }
 }());
@@ -8985,37 +8985,37 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
         return service;
 
         function getTickets() {
-            return $http.get('http://localhost:2001/tickets')
+            return $http.get('http://localhost:3001/tickets')
             .then(function(response) { return response.data; });
         }
 
         function getTicket(ticketId) {
-            return $http.get('http://localhost:2001/tickets/' + ticketId)
+            return $http.get('http://localhost:3001/tickets/' + ticketId)
             .then(function(response) { return response.data; });
         }
 
         function getTicketUpdates(ticketId) {
-            return $http.get('http://localhost:2001/tickets/' + ticketId + '/updates')
+            return $http.get('http://localhost:3001/tickets/' + ticketId + '/updates')
             .then(function(response) { return response.data; });
         }
 
         function updateTicket(ticketId, update) {
-            return $http.post('http://localhost:2001/tickets/' + ticketId + '/updates', update)
+            return $http.post('http://localhost:3001/tickets/' + ticketId + '/updates', update)
             .then(function(response) { return response.data; });
         }
 
         function editTicket(ticketId, ticket) {
-            return $http.put('http://localhost:2001/tickets/' + ticketId, ticket)
+            return $http.put('http://localhost:3001/tickets/' + ticketId, ticket)
             .then(function(response) { return response.data; });
         }
 
         function createTicket(ticket) {
-            return $http.post('http://localhost:2001/tickets', ticket)
+            return $http.post('http://localhost:3001/tickets', ticket)
             .then(function(response) { return response.data; });
         }
 
         function closeTicket(ticketId, userId) {
-            return $http.delete('http://localhost:2001/tickets/' + ticketId)
+            return $http.delete('http://localhost:3001/tickets/' + ticketId)
             .then(function(response) { return response.data; });
         }
     }

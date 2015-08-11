@@ -33,7 +33,7 @@
                 return deferred.promise;
             }
             else {
-                return $http.get('http://localhost:2004/messages/' + senderId + '/' + recipientId)
+                return $http.get('http://localhost:3002/messages/' + senderId + '/' + recipientId)
                 .then(function(response) {
                     service.allMessages[recipientId] = response.data;
                     return response.data;
@@ -46,7 +46,7 @@
                 service.allMessages[message.senderId].push(message);
             }
             else {
-                $http.get('http://localhost:2004/messages/' + message.recipientId + '/' + message.senderId)
+                $http.get('http://localhost:3001/messages/' + message.recipientId + '/' + message.senderId)
                 .then(function(response) {
                     service.allMessages[message.senderId] = response.data;
                     service.allMessages[message.senderId].push(message);
@@ -62,7 +62,7 @@
 
             // Send Message to Database
             // IDEA: We could send the message to the database from the node server in batches
-            return $http.post('http://localhost:2004/messages', message);
+            return $http.post('http://localhost:3001/messages', message);
         }
     }
 }());

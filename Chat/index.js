@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var userBase = {};
 
-http.listen(3000, function() {
+http.listen(3002, function() {
     console.log('Chat Server Online');
 });
 

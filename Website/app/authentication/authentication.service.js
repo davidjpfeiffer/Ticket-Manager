@@ -17,7 +17,7 @@
         return service;
 
         function login(email, password) {
-            return $http.get('http://localhost:2001/accounts?email=' + email + '&password=' + password)
+            return $http.get('http://localhost:3001/accounts?email=' + email + '&password=' + password)
             .then(onSuccess, onFail);
 
             function onSuccess(response) {
