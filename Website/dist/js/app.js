@@ -8804,7 +8804,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
 
         function connectToChat(account) {
             if (service.socket === null) {
-                service.socket = io.connect('http://localhost:3000');
+                service.socket = io.connect('http://localhost:3002');
                 service.socket.emit('add account to chat', account);
                 service.allMessages = {};
             }
@@ -8817,7 +8817,7 @@ $templateCache.put("directives/toast/toast.html","<div class=\"{{toastClass}} {{
                 return deferred.promise;
             }
             else {
-                return $http.get('http://localhost:3002/messages/' + senderId + '/' + recipientId)
+                return $http.get('http://localhost:3001/messages/' + senderId + '/' + recipientId)
                 .then(function(response) {
                     service.allMessages[recipientId] = response.data;
                     return response.data;
