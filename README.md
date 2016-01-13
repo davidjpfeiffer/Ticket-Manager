@@ -1,4 +1,6 @@
 # TicketManager
 Ticket Management System
 
-This project was created during the 2015 summer internship program at Vintage Software by David J Pfeiffer. The goal was to create a responsive and dynamic website using the .NET framework and Angular JS. The project will be hosted on a server and available to the public as an example website on or before 08/01/2015.
+This basic ticket management system was built during a summer internship with Vintage Software. The project was built in ASP.NET 4.5 as a single-page application implemented using AngularJS. The project is not entirely finished, and was primarily built to learn about the ASP.NET and AngularJS frameworks.
+
+Features include ticket management, ticket category management, and user management as well as a basic login system, chat system, and simple admintrative tools.
